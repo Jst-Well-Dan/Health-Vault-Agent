@@ -1,6 +1,8 @@
-from typing import Any, Optional
+from typing import Any, Literal, Optional
 
 from pydantic import BaseModel, ConfigDict, Field
+
+Severity = Literal["严重", "轻微", "一般"]
 
 
 class MemberBase(BaseModel):
@@ -12,6 +14,8 @@ class MemberBase(BaseModel):
     blood_type: Optional[str] = None
     role: Optional[str] = None
     species: Optional[str] = None
+    breed: Optional[str] = None
+    home_date: Optional[str] = None
     chip_id: Optional[str] = None
     doctor: Optional[str] = None
     allergies: Optional[list[str]] = None
@@ -41,6 +45,8 @@ class MemberOut(BaseModel):
     blood_type: Optional[str] = None
     role: Optional[str] = None
     species: str
+    breed: Optional[str] = None
+    home_date: Optional[str] = None
     chip_id: Optional[str] = None
     doctor: Optional[str] = None
     allergies: list[str] = Field(default_factory=list)
@@ -57,6 +63,7 @@ class VisitCreate(BaseModel):
     department: Optional[str] = None
     doctor: Optional[str] = None
     chief_complaint: Optional[str] = None
+    severity: Optional[Severity] = None
     diagnosis: list[str] = Field(default_factory=list)
     notes: Optional[str] = None
     source_file: Optional[str] = None
@@ -94,6 +101,7 @@ class MedCreate(BaseModel):
     start_date: Optional[str] = None
     end_date: Optional[str] = None
     ongoing: bool = False
+    category: Optional[str] = None
     notes: Optional[str] = None
 
 
@@ -105,6 +113,7 @@ class MedUpdate(BaseModel):
     start_date: Optional[str] = None
     end_date: Optional[str] = None
     ongoing: Optional[bool] = None
+    category: Optional[str] = None
     notes: Optional[str] = None
 
 
@@ -129,6 +138,7 @@ class ReminderCreate(BaseModel):
     title: str
     kind: str
     priority: str = "normal"
+    done: bool = False
     notes: Optional[str] = None
 
 

@@ -29,6 +29,8 @@ def init_db() -> None:
               blood_type  TEXT,
               role        TEXT,
               species     TEXT NOT NULL DEFAULT 'human',
+              breed       TEXT,
+              home_date   TEXT,
               chip_id     TEXT,
               doctor      TEXT,
               allergies   TEXT DEFAULT '[]',
@@ -46,6 +48,7 @@ def init_db() -> None:
               department      TEXT,
               doctor          TEXT,
               chief_complaint TEXT,
+              severity        TEXT CHECK (severity IS NULL OR severity IN ('严重', '轻微', '一般')),
               diagnosis       TEXT DEFAULT '[]',
               notes           TEXT,
               source_file     TEXT,
@@ -129,3 +132,16 @@ def init_db() -> None:
             CREATE INDEX IF NOT EXISTS idx_attachments_member  ON attachments(member_key, date);
             """
         )
+        existing_cols = {row[1] for row in conn.execute("PRAGMA table_info(meds)").fetchall()}
+        if "category" not in existing_cols:
+            conn.execute("ALTER TABLE meds ADD COLUMN category TEXT")
+
+        visit_cols = {row[1] for row in conn.execute("PRAGMA table_info(visits)").fetchall()}
+        if "severity" not in visit_cols:
+            conn.execute("ALTER TABLE visits ADD COLUMN severity TEXT")
+
+        member_cols = {row[1] for row in conn.execute("PRAGMA table_info(members)").fetchall()}
+        if "breed" not in member_cols:
+            conn.execute("ALTER TABLE members ADD COLUMN breed TEXT")
+        if "home_date" not in member_cols:
+            conn.execute("ALTER TABLE members ADD COLUMN home_date TEXT")

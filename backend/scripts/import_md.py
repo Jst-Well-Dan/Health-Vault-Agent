@@ -9,9 +9,19 @@ sys.path.insert(0, str(BACKEND_DIR))
 
 from database import get_conn, init_db  # noqa: E402
 
+SEVERITY_VALUES = {"严重", "轻微", "一般"}
+
 
 def _json_list(value) -> str:
     return json.dumps(value or [], ensure_ascii=False)
+
+
+def _severity(value: str | None) -> str | None:
+    if not value:
+        return None
+    if value not in SEVERITY_VALUES:
+        raise ValueError(f"severity must be one of {sorted(SEVERITY_VALUES)}, got {value!r}")
+    return value
 
 
 def import_payload(payload: dict) -> int:
@@ -27,8 +37,8 @@ def import_payload(payload: dict) -> int:
                 """
                 INSERT INTO visits
                   (member_key, date, hospital, department, doctor, chief_complaint,
-                   diagnosis, notes, source_file)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+                   severity, diagnosis, notes, source_file)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 """,
                 (
                     visit["member_key"],
@@ -37,6 +47,7 @@ def import_payload(payload: dict) -> int:
                     visit.get("department"),
                     visit.get("doctor"),
                     visit.get("chief_complaint"),
+                    _severity(visit.get("severity")),
                     _json_list(visit.get("diagnosis")),
                     visit.get("notes"),
                     visit.get("source_file"),
@@ -72,8 +83,8 @@ def import_payload(payload: dict) -> int:
                     """
                     INSERT INTO meds
                       (member_key, visit_id, name, dose, freq, route, start_date,
-                       end_date, ongoing, notes)
-                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                       end_date, ongoing, category, notes)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                     """,
                     (
                         visit["member_key"],
@@ -85,6 +96,7 @@ def import_payload(payload: dict) -> int:
                         med.get("start_date"),
                         med.get("end_date"),
                         1 if med.get("ongoing") else 0,
+                        med.get("category"),
                         med.get("notes"),
                     ),
                 )

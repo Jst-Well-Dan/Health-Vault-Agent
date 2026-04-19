@@ -23,3 +23,7 @@ dist/
 .vscode/
 .idea/
 .DS_Store
+
+# Docs
+docs\20260419\
+todo.md

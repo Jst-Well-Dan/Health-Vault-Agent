@@ -54,6 +54,8 @@ CREATE TABLE visits (
   department      TEXT,  -- '呼吸与危重症医学科'
   doctor          TEXT,
   chief_complaint TEXT,  -- '哮喘复查'
+  severity        TEXT CHECK (severity IS NULL OR severity IN ('严重', '轻微', '一般')),
+                         -- 本次治疗严重程度
   diagnosis       TEXT,  -- JSON: ["支气管哮喘(未控制)", "过敏性鼻炎"]
   notes           TEXT,
   source_file     TEXT   -- '20250902_安贞医院_春子_哮喘.md'

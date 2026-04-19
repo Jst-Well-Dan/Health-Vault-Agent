@@ -6,7 +6,7 @@ from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 
 from database import init_db
-from routers import attachments, labs, meds, members, reminders, visits, weight
+from routers import activity, attachments, labs, meds, members, reminders, visits, weight
 
 
 app = FastAPI(title="家庭健康档案 API", version="1.0.0")
@@ -26,6 +26,7 @@ def startup() -> None:
     init_db()
 
 
+app.include_router(activity.router, prefix="/api")
 app.include_router(members.router, prefix="/api")
 app.include_router(visits.router, prefix="/api")
 app.include_router(labs.router, prefix="/api")

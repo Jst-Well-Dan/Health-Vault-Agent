@@ -19,12 +19,15 @@ def _to_float(value: str | None) -> float | None:
 
 
 @router.get("/labs")
-def list_labs(member: str, panel: Optional[str] = None) -> list[dict]:
+def list_labs(member: str, panel: Optional[str] = None, visit_id: Optional[int] = None) -> list[dict]:
     where = ["member_key = ?"]
-    values = [member]
+    values: list = [member]
     if panel:
         where.append("panel = ?")
         values.append(panel)
+    if visit_id is not None:
+        where.append("visit_id = ?")
+        values.append(visit_id)
     with get_conn() as conn:
         rows = conn.execute(
             f"SELECT * FROM lab_results WHERE {' AND '.join(where)} ORDER BY date DESC, id DESC",

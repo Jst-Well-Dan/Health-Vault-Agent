@@ -32,8 +32,8 @@ def create_med(payload: MedCreate) -> dict:
         cur = conn.execute(
             """
             INSERT INTO meds
-              (member_key, visit_id, name, dose, freq, route, start_date, end_date, ongoing, notes)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+              (member_key, visit_id, name, dose, freq, route, start_date, end_date, ongoing, category, notes)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             """,
             (
                 payload.member_key,
@@ -45,6 +45,7 @@ def create_med(payload: MedCreate) -> dict:
                 payload.start_date,
                 payload.end_date,
                 1 if payload.ongoing else 0,
+                payload.category,
                 payload.notes,
             ),
         )

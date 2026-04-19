@@ -35,8 +35,8 @@ def create_reminder(payload: ReminderCreate) -> dict:
     with get_conn() as conn:
         cur = conn.execute(
             """
-            INSERT INTO reminders (member_key, date, title, kind, priority, notes)
-            VALUES (?, ?, ?, ?, ?, ?)
+            INSERT INTO reminders (member_key, date, title, kind, priority, done, done_at, notes)
+            VALUES (?, ?, ?, ?, ?, ?, CASE WHEN ? = 1 THEN datetime('now','localtime') ELSE NULL END, ?)
             """,
             (
                 payload.member_key,
@@ -44,6 +44,8 @@ def create_reminder(payload: ReminderCreate) -> dict:
                 payload.title,
                 payload.kind,
                 payload.priority,
+                1 if payload.done else 0,
+                1 if payload.done else 0,
                 payload.notes,
             ),
         )

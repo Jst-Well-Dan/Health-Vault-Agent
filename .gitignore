@@ -1,0 +1,25 @@
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+.venv/
+
+# SQLite
+data/*.db
+data/*.db-shm
+data/*.db-wal
+
+# Frontend
+node_modules/
+dist/
+
+# IDEs
+.vscode/
+.idea/
+.DS_Store

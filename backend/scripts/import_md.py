@@ -1,0 +1,127 @@
+import argparse
+import json
+import sys
+from pathlib import Path
+
+
+BACKEND_DIR = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(BACKEND_DIR))
+
+from database import get_conn, init_db  # noqa: E402
+
+
+def _json_list(value) -> str:
+    return json.dumps(value or [], ensure_ascii=False)
+
+
+def import_payload(payload: dict) -> int:
+    visit = payload["visit"]
+    labs = payload.get("labs", [])
+    meds = payload.get("meds", [])
+    attachments = payload.get("attachments", [])
+
+    init_db()
+    with get_conn() as conn:
+        try:
+            cur = conn.execute(
+                """
+                INSERT INTO visits
+                  (member_key, date, hospital, department, doctor, chief_complaint,
+                   diagnosis, notes, source_file)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+                """,
+                (
+                    visit["member_key"],
+                    visit["date"],
+                    visit.get("hospital"),
+                    visit.get("department"),
+                    visit.get("doctor"),
+                    visit.get("chief_complaint"),
+                    _json_list(visit.get("diagnosis")),
+                    visit.get("notes"),
+                    visit.get("source_file"),
+                ),
+            )
+            visit_id = cur.lastrowid
+
+            for lab in labs:
+                conn.execute(
+                    """
+                    INSERT INTO lab_results
+                      (member_key, visit_id, date, panel, test_name, value, unit,
+                       ref_low, ref_high, status, source_file)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    """,
+                    (
+                        visit["member_key"],
+                        visit_id,
+                        visit["date"],
+                        lab["panel"],
+                        lab["test_name"],
+                        lab.get("value"),
+                        lab.get("unit"),
+                        lab.get("ref_low"),
+                        lab.get("ref_high"),
+                        lab.get("status"),
+                        lab.get("source_file") or visit.get("source_file"),
+                    ),
+                )
+
+            for med in meds:
+                conn.execute(
+                    """
+                    INSERT INTO meds
+                      (member_key, visit_id, name, dose, freq, route, start_date,
+                       end_date, ongoing, notes)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    """,
+                    (
+                        visit["member_key"],
+                        visit_id,
+                        med["name"],
+                        med.get("dose"),
+                        med.get("freq"),
+                        med.get("route"),
+                        med.get("start_date"),
+                        med.get("end_date"),
+                        1 if med.get("ongoing") else 0,
+                        med.get("notes"),
+                    ),
+                )
+
+            for attachment in attachments:
+                conn.execute(
+                    """
+                    INSERT INTO attachments
+                      (member_key, visit_id, date, title, org, tag, filename, file_path, notes)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    """,
+                    (
+                        visit["member_key"],
+                        visit_id,
+                        attachment.get("date") or visit["date"],
+                        attachment["title"],
+                        attachment.get("org"),
+                        attachment.get("tag"),
+                        attachment.get("filename"),
+                        attachment.get("file_path"),
+                        attachment.get("notes"),
+                    ),
+                )
+        except Exception:
+            conn.rollback()
+            raise
+
+    return visit_id
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser(description="Import parsed medical report JSON into SQLite.")
+    parser.add_argument("--data", required=True, help="JSON payload with visit, labs, meds and attachments.")
+    args = parser.parse_args()
+    visit_id = import_payload(json.loads(args.data))
+    print(json.dumps({"ok": True, "visit_id": visit_id}, ensure_ascii=False))
+
+
+if __name__ == "__main__":
+    main()

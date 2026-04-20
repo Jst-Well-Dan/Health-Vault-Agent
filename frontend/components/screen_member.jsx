@@ -2,6 +2,15 @@
 
 const HUMAN_TABS = ['概览', '体检报告', '就医记录', '用药', '附件库', '提醒'];
 const PET_TABS = ['概览', '记事', '疫苗接种', '就医记录', '体重趋势', '附件库', '提醒'];
+const PET_CARE_KINDS = ['驱虫', '洗澡', '换猫砂'];
+const PET_CARE_KIND_SET = new Set(PET_CARE_KINDS);
+const PET_KIND_LABELS = {
+  weight: '体重',
+  pet_care: '疫苗/驱虫',
+  checkup: '体检',
+};
+
+const petKindLabel = (kind, fallback = '提醒') => PET_KIND_LABELS[kind] || kind || fallback;
 
 const apiJson = async (path, options) => {
   const res = await fetch(path, options);
@@ -910,7 +919,7 @@ const ScreenMember = ({ members = [], memberKey, onChangeMember, onDataChanged }
             className={`rail-item ${f.key === member.key ? 'active' : ''}`}
             onClick={() => onChangeMember(f.key)}
           >
-            <Avatar label={f.initial || f.name?.[0] || '?'} size="sm" cat={isPet(f)} ring={f.key === member.key} />
+            <Avatar label={f.initial || f.name?.[0] || '?'} src={memberAvatarSrc(f)} alt={f.name} size="sm" cat={isPet(f)} ring={f.key === member.key} />
             <div style={{ lineHeight: 1.1, flex: 1, minWidth: 0 }}>
               <div style={{ fontFamily: 'Caveat, cursive', fontSize: 20, fontWeight: 700 }}>{f.name}</div>
               <div className="mono" style={{ color: 'var(--ink-soft)', fontSize: 9.5, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
@@ -928,7 +937,7 @@ const ScreenMember = ({ members = [], memberKey, onChangeMember, onDataChanged }
           background: isCat ? 'color-mix(in oklab, var(--accent-3) 28%, var(--paper))' : 'var(--paper)',
         }}>
           <div style={{ display: 'flex', gap: 16, alignItems: 'center' }}>
-            <Avatar label={member.initial || member.name?.[0] || '?'} size="xl" cat={isCat} ring={memberWarn(member) || isCat} />
+            <Avatar label={member.initial || member.name?.[0] || '?'} src={memberAvatarSrc(member)} alt={member.name} size="xl" cat={isCat} ring={memberWarn(member) || isCat} />
             <div>
               <div className="mono" style={{ color: 'var(--ink-soft)' }}>
                 {isCat ? '宠物档案 · ' : '档案 · '}{member.full_name || member.name}
@@ -1053,7 +1062,7 @@ const DailyEditor = ({ editor, member, isPetMember, saving, onClose, onChoose, o
             {isPetMember && (
               <button className="daily-choice" onClick={() => onChoose('care')}>
                 <span>记事</span>
-                <small>日常护理、换猫砂、洗澡等</small>
+                <small>驱虫、洗澡、换猫砂</small>
               </button>
             )}
             {isPetMember && (
@@ -1104,7 +1113,7 @@ const ReminderForm = ({ item, saving, onSubmit, onCancel }) => {
 const CareLogForm = ({ item, saving, onSubmit, onCancel }) => {
   const [form, setForm] = React.useState({
     date: item?.date || todayIso(),
-    kind: item?.kind || '记事',
+    kind: PET_CARE_KIND_SET.has(item?.kind) ? item.kind : PET_CARE_KINDS[0],
     title: item?.title || '',
     notes: item?.notes || '',
   });
@@ -1112,7 +1121,9 @@ const CareLogForm = ({ item, saving, onSubmit, onCancel }) => {
   return (
     <form className="daily-form" onSubmit={(e) => { e.preventDefault(); onSubmit({ ...form, title: form.title || form.kind }, item); }}>
       <label>日期<input required type="date" value={form.date} onChange={e => set('date', e.target.value)} /></label>
-      <label>类型<input required value={form.kind} onChange={e => set('kind', e.target.value)} placeholder="例如：驱虫 / 换猫砂 / 洗澡" /></label>
+      <label>类型<select required value={form.kind} onChange={e => set('kind', e.target.value)}>
+        {PET_CARE_KINDS.map(kind => <option key={kind} value={kind}>{kind}</option>)}
+      </select></label>
       <label>备注标题<input value={form.title} onChange={e => set('title', e.target.value)} placeholder={`例如：${form.kind}（可选）`} /></label>
       <label className="span-2">备注<textarea value={form.notes} onChange={e => set('notes', e.target.value)} rows="2" /></label>
       <div className="form-actions">
@@ -2025,10 +2036,11 @@ const TabPetOverview = ({ member, labs, visits, meds, weights, reminders, attach
     .map(r => ({
       id: `care-${r.id}`,
       date: r.date,
-      kind: r.kind || '记事',
+      kind: petKindLabel(r.kind, '记事'),
       title: r.title,
       meta: '记事记录',
-    }));
+    }))
+    .filter(r => PET_CARE_KIND_SET.has(r.kind));
   const recentRecords = [...visitRecords, ...weightRecords.slice(-3), ...medRecords, ...careRecords]
     .filter(r => r.date)
     .sort((a, b) => b.date.localeCompare(a.date))
@@ -2083,7 +2095,7 @@ const TabPetOverview = ({ member, labs, visits, meds, weights, reminders, attach
                   <Chip variant={petReminderVariant(r.date)}>{relativeDueText(r.date)}</Chip>
                   <div>
                     <strong>{r.title}</strong>
-                    <span className="mono">{r.kind || '提醒'} · {r.date || '未定日期'}</span>
+                    <span className="mono">{petKindLabel(r.kind)} · {r.date || '未定日期'}</span>
                   </div>
                 </div>
               ))}
@@ -2165,9 +2177,11 @@ const TabPetCare = ({ reminders, attachments, onAdd, onEdit, onDelete }) => {
   const [filter, setFilter] = React.useState('全部');
   const careReminders = reminders
     .filter(r => r.done)
-    .map(r => ({ ...r, kind: r.kind || '记事' }));
+    .map(r => ({ ...r, kind: r.kind || '记事' }))
+    .filter(r => PET_CARE_KIND_SET.has(r.kind));
   const careAttachments = attachments
-    .map(a => ({ id: `att-${a.id}`, date: a.date, title: a.title, kind: a.tag || '附件', done: true }));
+    .map(a => ({ id: `att-${a.id}`, date: a.date, title: a.title, kind: a.tag || '附件', done: true }))
+    .filter(a => PET_CARE_KIND_SET.has(a.kind));
   const allItems = [...careReminders, ...careAttachments].sort((a, b) => (b.date || '').localeCompare(a.date || ''));
   const kinds = ['全部', ...new Set(allItems.map(x => x.kind))];
   const displayed = filter === '全部' ? allItems : allItems.filter(x => x.kind === filter);

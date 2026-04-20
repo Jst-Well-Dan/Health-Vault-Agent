@@ -1,0 +1,850 @@
+{
+  "visit": {
+    "member_key": "chunzi",
+    "date": "2021-04-27",
+    "type": "体检",
+    "hospital": "爱康国宾 (北京中关村分院)",
+    "department": null,
+    "doctor": null,
+    "chief_complaint": "入职体检",
+    "severity": "轻微",
+    "diagnosis": [
+      "屈光不正",
+      "双侧乳腺增生",
+      "颈椎生理曲度变直",
+      "尿沉渣镜检白细胞增高",
+      "浅表性胃炎(伴胆汁反流)"
+    ],
+    "notes": null,
+    "source_file": "data/reports/chunzi/md/20210427_爱康国宾_春子_入职体检.md"
+  },
+  "labs": [
+    {
+      "panel": "一般项目检查",
+      "test_name": "身高",
+      "value": "166.5",
+      "unit": "cm",
+      "ref_low": null,
+      "ref_high": null,
+      "status": "unknown",
+      "source_file": "data/reports/chunzi/md/20210427_爱康国宾_春子_入职体检.md"
+    },
+    {
+      "panel": "一般项目检查",
+      "test_name": "体重",
+      "value": "62.9",
+      "unit": "Kg",
+      "ref_low": null,
+      "ref_high": null,
+      "status": "unknown",
+      "source_file": "data/reports/chunzi/md/20210427_爱康国宾_春子_入职体检.md"
+    },
+    {
+      "panel": "一般项目检查",
+      "test_name": "体重指数",
+      "value": "22.7",
+      "unit": null,
+      "ref_low": "18.5",
+      "ref_high": "23.99",
+      "status": "normal",
+      "source_file": "data/reports/chunzi/md/20210427_爱康国宾_春子_入职体检.md"
+    },
+    {
+      "panel": "一般项目检查",
+      "test_name": "收缩压",
+      "value": "100",
+      "unit": "mmHg",
+      "ref_low": "90",
+      "ref_high": "139",
+      "status": "normal",
+      "source_file": "data/reports/chunzi/md/20210427_爱康国宾_春子_入职体检.md"
+    },
+    {
+      "panel": "一般项目检查",
+      "test_name": "舒张压",
+      "value": "70",
+      "unit": "mmHg",
+      "ref_low": "60",
+      "ref_high": "89",
+      "status": "normal",
+      "source_file": "data/reports/chunzi/md/20210427_爱康国宾_春子_入职体检.md"
+    },
+    {
+      "panel": "一般项目检查",
+      "test_name": "初步意见",
+      "value": "未见明显异常",
+      "unit": null,
+      "ref_low": null,
+      "ref_high": null,
+      "status": "unknown",
+      "source_file": "data/reports/chunzi/md/20210427_爱康国宾_春子_入职体检.md"
+    },
+    {
+      "panel": "内科",
+      "test_name": "病史",
+      "value": "无",
+      "unit": null,
+      "ref_low": null,
+      "ref_high": null,
+      "status": "unknown",
+      "source_file": "data/reports/chunzi/md/20210427_爱康国宾_春子_入职体检.md"
+    },
+    {
+      "panel": "内科",
+      "test_name": "家族史",
+      "value": "无特殊",
+      "unit": null,
+      "ref_low": null,
+      "ref_high": null,
+      "status": "unknown",
+      "source_file": "data/reports/chunzi/md/20210427_爱康国宾_春子_入职体检.md"
+    },
+    {
+      "panel": "内科",
+      "test_name": "心率(次/分)",
+      "value": "67",
+      "unit": "次/分",
+      "ref_low": null,
+      "ref_high": null,
+      "status": "unknown",
+      "source_file": "data/reports/chunzi/md/20210427_爱康国宾_春子_入职体检.md"
+    },
+    {
+      "panel": "内科",
+      "test_name": "心律",
+      "value": "齐",
+      "unit": null,
+      "ref_low": null,
+      "ref_high": null,
+      "status": "unknown",
+      "source_file": "data/reports/chunzi/md/20210427_爱康国宾_春子_入职体检.md"
+    },
+    {
+      "panel": "内科",
+      "test_name": "心音",
+      "value": "正常",
+      "unit": null,
+      "ref_low": null,
+      "ref_high": null,
+      "status": "unknown",
+      "source_file": "data/reports/chunzi/md/20210427_爱康国宾_春子_入职体检.md"
+    },
+    {
+      "panel": "内科",
+      "test_name": "肺部听诊",
+      "value": "双侧呼吸音未闻及异常",
+      "unit": null,
+      "ref_low": null,
+      "ref_high": null,
+      "status": "unknown",
+      "source_file": "data/reports/chunzi/md/20210427_爱康国宾_春子_入职体检.md"
+    },
+    {
+      "panel": "内科",
+      "test_name": "肝脏触诊",
+      "value": "肝脏肋下未触及",
+      "unit": null,
+      "ref_low": null,
+      "ref_high": null,
+      "status": "unknown",
+      "source_file": "data/reports/chunzi/md/20210427_爱康国宾_春子_入职体检.md"
+    },
+    {
+      "panel": "内科",
+      "test_name": "脾脏触诊",
+      "value": "脾脏肋下未触及",
+      "unit": null,
+      "ref_low": null,
+      "ref_high": null,
+      "status": "unknown",
+      "source_file": "data/reports/chunzi/md/20210427_爱康国宾_春子_入职体检.md"
+    },
+    {
+      "panel": "内科",
+      "test_name": "肾脏叩诊",
+      "value": "双肾区无叩痛",
+      "unit": null,
+      "ref_low": null,
+      "ref_high": null,
+      "status": "unknown",
+      "source_file": "data/reports/chunzi/md/20210427_爱康国宾_春子_入职体检.md"
+    },
+    {
+      "panel": "内科",
+      "test_name": "内科其它",
+      "value": "无",
+      "unit": null,
+      "ref_low": null,
+      "ref_high": null,
+      "status": "unknown",
+      "source_file": "data/reports/chunzi/md/20210427_爱康国宾_春子_入职体检.md"
+    },
+    {
+      "panel": "内科",
+      "test_name": "初步意见",
+      "value": "未见明显异常",
+      "unit": null,
+      "ref_low": null,
+      "ref_high": null,
+      "status": "unknown",
+      "source_file": "data/reports/chunzi/md/20210427_爱康国宾_春子_入职体检.md"
+    },
+    {
+      "panel": "外科",
+      "test_name": "皮肤",
+      "value": "未见明显异常",
+      "unit": null,
+      "ref_low": null,
+      "ref_high": null,
+      "status": "unknown",
+      "source_file": "data/reports/chunzi/md/20210427_爱康国宾_春子_入职体检.md"
+    },
+    {
+      "panel": "外科",
+      "test_name": "浅表淋巴结",
+      "value": "未见明显异常",
+      "unit": null,
+      "ref_low": null,
+      "ref_high": null,
+      "status": "unknown",
+      "source_file": "data/reports/chunzi/md/20210427_爱康国宾_春子_入职体检.md"
+    },
+    {
+      "panel": "外科",
+      "test_name": "甲状腺(外科)",
+      "value": "甲状腺双侧Ⅰ度肿大",
+      "unit": null,
+      "ref_low": null,
+      "ref_high": null,
+      "status": "unknown",
+      "source_file": "data/reports/chunzi/md/20210427_爱康国宾_春子_入职体检.md"
+    },
+    {
+      "panel": "外科",
+      "test_name": "乳房",
+      "value": "未见明显异常",
+      "unit": null,
+      "ref_low": null,
+      "ref_high": null,
+      "status": "unknown",
+      "source_file": "data/reports/chunzi/md/20210427_爱康国宾_春子_入职体检.md"
+    },
+    {
+      "panel": "外科",
+      "test_name": "脊柱",
+      "value": "脊柱侧弯",
+      "unit": null,
+      "ref_low": null,
+      "ref_high": null,
+      "status": "unknown",
+      "source_file": "data/reports/chunzi/md/20210427_爱康国宾_春子_入职体检.md"
+    },
+    {
+      "panel": "外科",
+      "test_name": "四肢关节",
+      "value": "未见明显异常",
+      "unit": null,
+      "ref_low": null,
+      "ref_high": null,
+      "status": "unknown",
+      "source_file": "data/reports/chunzi/md/20210427_爱康国宾_春子_入职体检.md"
+    },
+    {
+      "panel": "外科",
+      "test_name": "肛门、直肠指诊",
+      "value": "未见明显异常",
+      "unit": null,
+      "ref_low": null,
+      "ref_high": null,
+      "status": "unknown",
+      "source_file": "data/reports/chunzi/md/20210427_爱康国宾_春子_入职体检.md"
+    },
+    {
+      "panel": "外科",
+      "test_name": "外科其它",
+      "value": "无",
+      "unit": null,
+      "ref_low": null,
+      "ref_high": null,
+      "status": "unknown",
+      "source_file": "data/reports/chunzi/md/20210427_爱康国宾_春子_入职体检.md"
+    },
+    {
+      "panel": "外科",
+      "test_name": "初步意见",
+      "value": "双侧甲状腺肿大(?) 脊柱侧弯",
+      "unit": null,
+      "ref_low": null,
+      "ref_high": null,
+      "status": "unknown",
+      "source_file": "data/reports/chunzi/md/20210427_爱康国宾_春子_入职体检.md"
+    },
+    {
+      "panel": "眼科",
+      "test_name": "矫正视力(右)",
+      "value": "1.2",
+      "unit": null,
+      "ref_low": null,
+      "ref_high": null,
+      "status": "unknown",
+      "source_file": "data/reports/chunzi/md/20210427_爱康国宾_春子_入职体检.md"
+    },
+    {
+      "panel": "眼科",
+      "test_name": "矫正视力(左)",
+      "value": "1.5",
+      "unit": null,
+      "ref_low": null,
+      "ref_high": null,
+      "status": "unknown",
+      "source_file": "data/reports/chunzi/md/20210427_爱康国宾_春子_入职体检.md"
+    },
+    {
+      "panel": "眼科",
+      "test_name": "色觉",
+      "value": "正常",
+      "unit": null,
+      "ref_low": null,
+      "ref_high": null,
+      "status": "unknown",
+      "source_file": "data/reports/chunzi/md/20210427_爱康国宾_春子_入职体检.md"
+    },
+    {
+      "panel": "眼科",
+      "test_name": "外眼",
+      "value": "左眼下睑缘向内卷曲、睫毛倒向眼球",
+      "unit": null,
+      "ref_low": null,
+      "ref_high": null,
+      "status": "unknown",
+      "source_file": "data/reports/chunzi/md/20210427_爱康国宾_春子_入职体检.md"
+    },
+    {
+      "panel": "眼科",
+      "test_name": "眼科其它",
+      "value": "无",
+      "unit": null,
+      "ref_low": null,
+      "ref_high": null,
+      "status": "unknown",
+      "source_file": "data/reports/chunzi/md/20210427_爱康国宾_春子_入职体检.md"
+    },
+    {
+      "panel": "眼科",
+      "test_name": "初步意见",
+      "value": "屈光不正左眼倒睫",
+      "unit": null,
+      "ref_low": null,
+      "ref_high": null,
+      "status": "unknown",
+      "source_file": "data/reports/chunzi/md/20210427_爱康国宾_春子_入职体检.md"
+    },
+    {
+      "panel": "血常规",
+      "test_name": "白细胞计数",
+      "value": "8.30",
+      "unit": "10^9/L",
+      "ref_low": "3.5",
+      "ref_high": "9.5",
+      "status": "normal",
+      "source_file": "data/reports/chunzi/md/20210427_爱康国宾_春子_入职体检.md"
+    },
+    {
+      "panel": "血常规",
+      "test_name": "红细胞计数",
+      "value": "4.87",
+      "unit": "10^12/L",
+      "ref_low": "3.80",
+      "ref_high": "5.10",
+      "status": "normal",
+      "source_file": "data/reports/chunzi/md/20210427_爱康国宾_春子_入职体检.md"
+    },
+    {
+      "panel": "血常规",
+      "test_name": "血红蛋白",
+      "value": "139.00",
+      "unit": "g/L",
+      "ref_low": "115",
+      "ref_high": "150",
+      "status": "normal",
+      "source_file": "data/reports/chunzi/md/20210427_爱康国宾_春子_入职体检.md"
+    },
+    {
+      "panel": "血常规",
+      "test_name": "红细胞比容",
+      "value": "0.40",
+      "unit": "%",
+      "ref_low": "0.35",
+      "ref_high": "0.45",
+      "status": "normal",
+      "source_file": "data/reports/chunzi/md/20210427_爱康国宾_春子_入职体检.md"
+    },
+    {
+      "panel": "血常规",
+      "test_name": "平均红细胞体积",
+      "value": "82.00",
+      "unit": "fL",
+      "ref_low": "82.0",
+      "ref_high": "100.0",
+      "status": "normal",
+      "source_file": "data/reports/chunzi/md/20210427_爱康国宾_春子_入职体检.md"
+    },
+    {
+      "panel": "血常规",
+      "test_name": "平均红细胞血红蛋白含量",
+      "value": "28.50",
+      "unit": "Pg",
+      "ref_low": "27",
+      "ref_high": "34",
+      "status": "normal",
+      "source_file": "data/reports/chunzi/md/20210427_爱康国宾_春子_入职体检.md"
+    },
+    {
+      "panel": "血常规",
+      "test_name": "平均红细胞血红蛋白浓度",
+      "value": "349.00",
+      "unit": "g/L",
+      "ref_low": "316",
+      "ref_high": "354",
+      "status": "normal",
+      "source_file": "data/reports/chunzi/md/20210427_爱康国宾_春子_入职体检.md"
+    },
+    {
+      "panel": "血常规",
+      "test_name": "红细胞分布宽度-变异系数",
+      "value": "14.50",
+      "unit": "%",
+      "ref_low": "10",
+      "ref_high": "15",
+      "status": "normal",
+      "source_file": "data/reports/chunzi/md/20210427_爱康国宾_春子_入职体检.md"
+    },
+    {
+      "panel": "血常规",
+      "test_name": "血小板计数",
+      "value": "205.00",
+      "unit": "10^9/L",
+      "ref_low": "125",
+      "ref_high": "350",
+      "status": "normal",
+      "source_file": "data/reports/chunzi/md/20210427_爱康国宾_春子_入职体检.md"
+    },
+    {
+      "panel": "血常规",
+      "test_name": "平均血小板体积",
+      "value": "9.70",
+      "unit": "fL",
+      "ref_low": "9",
+      "ref_high": "13",
+      "status": "normal",
+      "source_file": "data/reports/chunzi/md/20210427_爱康国宾_春子_入职体检.md"
+    },
+    {
+      "panel": "血常规",
+      "test_name": "血小板分布宽度",
+      "value": "13.50",
+      "unit": "fL",
+      "ref_low": "9",
+      "ref_high": "17",
+      "status": "normal",
+      "source_file": "data/reports/chunzi/md/20210427_爱康国宾_春子_入职体检.md"
+    },
+    {
+      "panel": "血常规",
+      "test_name": "淋巴细胞百分比",
+      "value": "27.10",
+      "unit": "%",
+      "ref_low": "20",
+      "ref_high": "50",
+      "status": "normal",
+      "source_file": "data/reports/chunzi/md/20210427_爱康国宾_春子_入职体检.md"
+    },
+    {
+      "panel": "血常规",
+      "test_name": "中性粒细胞百分比",
+      "value": "62.80",
+      "unit": "%",
+      "ref_low": "40",
+      "ref_high": "75",
+      "status": "normal",
+      "source_file": "data/reports/chunzi/md/20210427_爱康国宾_春子_入职体检.md"
+    },
+    {
+      "panel": "血常规",
+      "test_name": "淋巴细胞绝对值",
+      "value": "2.26",
+      "unit": "10^9/L",
+      "ref_low": "1.1",
+      "ref_high": "3.2",
+      "status": "normal",
+      "source_file": "data/reports/chunzi/md/20210427_爱康国宾_春子_入职体检.md"
+    },
+    {
+      "panel": "血常规",
+      "test_name": "中性粒细胞绝对值",
+      "value": "5.24",
+      "unit": "10^9/L",
+      "ref_low": "1.8",
+      "ref_high": "6.3",
+      "status": "normal",
+      "source_file": "data/reports/chunzi/md/20210427_爱康国宾_春子_入职体检.md"
+    },
+    {
+      "panel": "血常规",
+      "test_name": "红细胞分布宽度-标准差",
+      "value": "42.0",
+      "unit": "fL",
+      "ref_low": "37",
+      "ref_high": "50",
+      "status": "normal",
+      "source_file": "data/reports/chunzi/md/20210427_爱康国宾_春子_入职体检.md"
+    },
+    {
+      "panel": "血常规",
+      "test_name": "血小板压积",
+      "value": "0.20",
+      "unit": "%",
+      "ref_low": "0.1",
+      "ref_high": "0.3",
+      "status": "normal",
+      "source_file": "data/reports/chunzi/md/20210427_爱康国宾_春子_入职体检.md"
+    },
+    {
+      "panel": "血常规",
+      "test_name": "单核细胞百分比",
+      "value": "6.70",
+      "unit": "%",
+      "ref_low": "3.5",
+      "ref_high": "9.5",
+      "status": "normal",
+      "source_file": "data/reports/chunzi/md/20210427_爱康国宾_春子_入职体检.md"
+    },
+    {
+      "panel": "血常规",
+      "test_name": "单核细胞绝对值",
+      "value": "0.56",
+      "unit": "10^9/L",
+      "ref_low": "0.1",
+      "ref_high": "0.6",
+      "status": "normal",
+      "source_file": "data/reports/chunzi/md/20210427_爱康国宾_春子_入职体检.md"
+    },
+    {
+      "panel": "血常规",
+      "test_name": "嗜酸性细胞百分比",
+      "value": "3.30",
+      "unit": "%",
+      "ref_low": "0.0",
+      "ref_high": "8.0",
+      "status": "normal",
+      "source_file": "data/reports/chunzi/md/20210427_爱康国宾_春子_入职体检.md"
+    },
+    {
+      "panel": "血常规",
+      "test_name": "嗜酸性细胞绝对值",
+      "value": "0.28",
+      "unit": "10^9/L",
+      "ref_low": "0.02",
+      "ref_high": "0.52",
+      "status": "normal",
+      "source_file": "data/reports/chunzi/md/20210427_爱康国宾_春子_入职体检.md"
+    },
+    {
+      "panel": "血常规",
+      "test_name": "嗜碱性细胞百分比",
+      "value": "0.10",
+      "unit": "%",
+      "ref_low": "0",
+      "ref_high": "1",
+      "status": "normal",
+      "source_file": "data/reports/chunzi/md/20210427_爱康国宾_春子_入职体检.md"
+    },
+    {
+      "panel": "血常规",
+      "test_name": "嗜碱性细胞绝对值",
+      "value": "0.01",
+      "unit": "10^9/L",
+      "ref_low": "0.00",
+      "ref_high": "0.06",
+      "status": "normal",
+      "source_file": "data/reports/chunzi/md/20210427_爱康国宾_春子_入职体检.md"
+    },
+    {
+      "panel": "尿常规",
+      "test_name": "尿比重",
+      "value": "1.020",
+      "unit": null,
+      "ref_low": "1.005",
+      "ref_high": "1.030",
+      "status": "normal",
+      "source_file": "data/reports/chunzi/md/20210427_爱康国宾_春子_入职体检.md"
+    },
+    {
+      "panel": "尿常规",
+      "test_name": "尿酸碱度",
+      "value": "6.0",
+      "unit": null,
+      "ref_low": "4.5",
+      "ref_high": "8.0",
+      "status": "normal",
+      "source_file": "data/reports/chunzi/md/20210427_爱康国宾_春子_入职体检.md"
+    },
+    {
+      "panel": "尿常规",
+      "test_name": "尿白细胞",
+      "value": "阴性",
+      "unit": null,
+      "ref_low": "阴性",
+      "ref_high": null,
+      "status": "normal",
+      "source_file": "data/reports/chunzi/md/20210427_爱康国宾_春子_入职体检.md"
+    },
+    {
+      "panel": "尿常规",
+      "test_name": "尿亚硝酸盐",
+      "value": "阴性",
+      "unit": null,
+      "ref_low": "阴性",
+      "ref_high": null,
+      "status": "normal",
+      "source_file": "data/reports/chunzi/md/20210427_爱康国宾_春子_入职体检.md"
+    },
+    {
+      "panel": "尿常规",
+      "test_name": "尿蛋白质",
+      "value": "阴性",
+      "unit": null,
+      "ref_low": "阴性",
+      "ref_high": null,
+      "status": "normal",
+      "source_file": "data/reports/chunzi/md/20210427_爱康国宾_春子_入职体检.md"
+    },
+    {
+      "panel": "尿常规",
+      "test_name": "尿糖",
+      "value": "阴性",
+      "unit": null,
+      "ref_low": "阴性",
+      "ref_high": null,
+      "status": "normal",
+      "source_file": "data/reports/chunzi/md/20210427_爱康国宾_春子_入职体检.md"
+    },
+    {
+      "panel": "尿常规",
+      "test_name": "尿酮体",
+      "value": "阴性",
+      "unit": null,
+      "ref_low": "阴性",
+      "ref_high": null,
+      "status": "normal",
+      "source_file": "data/reports/chunzi/md/20210427_爱康国宾_春子_入职体检.md"
+    },
+    {
+      "panel": "尿常规",
+      "test_name": "尿胆原",
+      "value": "阴性",
+      "unit": null,
+      "ref_low": "阴性",
+      "ref_high": null,
+      "status": "normal",
+      "source_file": "data/reports/chunzi/md/20210427_爱康国宾_春子_入职体检.md"
+    },
+    {
+      "panel": "尿常规",
+      "test_name": "尿胆红素",
+      "value": "阴性",
+      "unit": null,
+      "ref_low": "阴性",
+      "ref_high": null,
+      "status": "normal",
+      "source_file": "data/reports/chunzi/md/20210427_爱康国宾_春子_入职体检.md"
+    },
+    {
+      "panel": "尿常规",
+      "test_name": "尿隐血",
+      "value": "2+",
+      "unit": null,
+      "ref_low": "阴性",
+      "ref_high": null,
+      "status": "high",
+      "source_file": "data/reports/chunzi/md/20210427_爱康国宾_春子_入职体检.md"
+    },
+    {
+      "panel": "尿常规",
+      "test_name": "尿镜检红细胞",
+      "value": "0-1",
+      "unit": "/HP",
+      "ref_low": "0",
+      "ref_high": "3",
+      "status": "normal",
+      "source_file": "data/reports/chunzi/md/20210427_爱康国宾_春子_入职体检.md"
+    },
+    {
+      "panel": "尿常规",
+      "test_name": "尿镜检白细胞",
+      "value": "0",
+      "unit": "/HP",
+      "ref_low": "0",
+      "ref_high": "5",
+      "status": "normal",
+      "source_file": "data/reports/chunzi/md/20210427_爱康国宾_春子_入职体检.md"
+    },
+    {
+      "panel": "尿常规",
+      "test_name": "管型",
+      "value": "0",
+      "unit": null,
+      "ref_low": "0",
+      "ref_high": "1",
+      "status": "normal",
+      "source_file": "data/reports/chunzi/md/20210427_爱康国宾_春子_入职体检.md"
+    },
+    {
+      "panel": "尿常规",
+      "test_name": "上皮细胞",
+      "value": "0",
+      "unit": "/HP",
+      "ref_low": "0",
+      "ref_high": "5",
+      "status": "normal",
+      "source_file": "data/reports/chunzi/md/20210427_爱康国宾_春子_入职体检.md"
+    },
+    {
+      "panel": "尿常规",
+      "test_name": "无机盐类",
+      "value": "0",
+      "unit": null,
+      "ref_low": null,
+      "ref_high": null,
+      "status": "unknown",
+      "source_file": "data/reports/chunzi/md/20210427_爱康国宾_春子_入职体检.md"
+    },
+    {
+      "panel": "实验室检查",
+      "test_name": "丙氨酸氨基转移酶",
+      "value": "14",
+      "unit": "U/L",
+      "ref_low": "0",
+      "ref_high": "40",
+      "status": "normal",
+      "source_file": "data/reports/chunzi/md/20210427_爱康国宾_春子_入职体检.md"
+    },
+    {
+      "panel": "实验室检查",
+      "test_name": "肌酐",
+      "value": "52",
+      "unit": "umol/L",
+      "ref_low": "35",
+      "ref_high": "106",
+      "status": "normal",
+      "source_file": "data/reports/chunzi/md/20210427_爱康国宾_春子_入职体检.md"
+    },
+    {
+      "panel": "实验室检查",
+      "test_name": "空腹血葡萄糖",
+      "value": "5.45",
+      "unit": "mmol/L",
+      "ref_low": "3.9",
+      "ref_high": "6.1",
+      "status": "normal",
+      "source_file": "data/reports/chunzi/md/20210427_爱康国宾_春子_入职体检.md"
+    },
+    {
+      "panel": "心电图室",
+      "test_name": "心电图",
+      "value": "窦性心律 正常心电图",
+      "unit": null,
+      "ref_low": null,
+      "ref_high": null,
+      "status": "unknown",
+      "source_file": "data/reports/chunzi/md/20210427_爱康国宾_春子_入职体检.md"
+    },
+    {
+      "panel": "心电图室",
+      "test_name": "初步意见",
+      "value": "未见明显异常",
+      "unit": null,
+      "ref_low": null,
+      "ref_high": null,
+      "status": "unknown",
+      "source_file": "data/reports/chunzi/md/20210427_爱康国宾_春子_入职体检.md"
+    },
+    {
+      "panel": "超声检查室",
+      "test_name": "肝",
+      "value": "未见明显异常",
+      "unit": null,
+      "ref_low": null,
+      "ref_high": null,
+      "status": "unknown",
+      "source_file": "data/reports/chunzi/md/20210427_爱康国宾_春子_入职体检.md"
+    },
+    {
+      "panel": "超声检查室",
+      "test_name": "胆",
+      "value": "未见明显异常",
+      "unit": null,
+      "ref_low": null,
+      "ref_high": null,
+      "status": "unknown",
+      "source_file": "data/reports/chunzi/md/20210427_爱康国宾_春子_入职体检.md"
+    },
+    {
+      "panel": "超声检查室",
+      "test_name": "胰",
+      "value": "未见明显异常",
+      "unit": null,
+      "ref_low": null,
+      "ref_high": null,
+      "status": "unknown",
+      "source_file": "data/reports/chunzi/md/20210427_爱康国宾_春子_入职体检.md"
+    },
+    {
+      "panel": "超声检查室",
+      "test_name": "脾",
+      "value": "未见明显异常",
+      "unit": null,
+      "ref_low": null,
+      "ref_high": null,
+      "status": "unknown",
+      "source_file": "data/reports/chunzi/md/20210427_爱康国宾_春子_入职体检.md"
+    },
+    {
+      "panel": "超声检查室",
+      "test_name": "双肾",
+      "value": "未见明显异常",
+      "unit": null,
+      "ref_low": null,
+      "ref_high": null,
+      "status": "unknown",
+      "source_file": "data/reports/chunzi/md/20210427_爱康国宾_春子_入职体检.md"
+    },
+    {
+      "panel": "超声检查室",
+      "test_name": "初步意见",
+      "value": "未见明显异常",
+      "unit": null,
+      "ref_low": null,
+      "ref_high": null,
+      "status": "unknown",
+      "source_file": "data/reports/chunzi/md/20210427_爱康国宾_春子_入职体检.md"
+    }
+  ],
+  "meds": [],
+  "attachments": [
+    {
+      "title": "入职体检 Markdown",
+      "org": "爱康国宾",
+      "tag": "入职体检",
+      "filename": "20210427_爱康国宾_春子_入职体检.md",
+      "file_path": "data/reports/chunzi/md/20210427_爱康国宾_春子_入职体检.md"
+    },
+    {
+      "title": "入职体检 PDF",
+      "org": "爱康国宾",
+      "tag": "入职体检",
+      "filename": "20210427_爱康国宾_春子_入职体检.pdf",
+      "file_path": "data/reports/chunzi/pdf/20210427_爱康国宾_春子_入职体检.pdf"
+    }
+  ]
+}

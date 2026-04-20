@@ -58,7 +58,7 @@ def lab_trend(member: str, test_name: str) -> dict:
     with get_conn() as conn:
         rows = conn.execute(
             """
-            SELECT date, value, unit, ref_low, ref_high, visit_id
+            SELECT date, value, unit, ref_low, ref_high, status, visit_id
             FROM lab_results
             WHERE member_key = ? AND test_name = ?
             ORDER BY date ASC, id ASC
@@ -69,7 +69,12 @@ def lab_trend(member: str, test_name: str) -> dict:
     ref_low = rows[-1]["ref_low"] if rows else None
     ref_high = rows[-1]["ref_high"] if rows else None
     points = [
-        {"date": row["date"], "value": _to_float(row["value"]), "visit_id": row["visit_id"]}
+        {
+            "date": row["date"],
+            "value": _to_float(row["value"]),
+            "status": row["status"],
+            "visit_id": row["visit_id"],
+        }
         for row in rows
         if _to_float(row["value"]) is not None
     ]

@@ -63,3 +63,18 @@ Strong success criteria let you loop independently. Weak criteria ("make it work
 ---
 
 **These guidelines are working if:** fewer unnecessary changes in diffs, fewer rewrites due to overcomplication, and clarifying questions come before implementation rather than after mistakes.
+
+## 5. Database Write Rules
+
+This project stores personal and family health records in SQLite. Treat the real database as user data.
+
+- For database write/import tasks, use the project skill at `skills/health-db-writer`.
+- Do not edit `data/health.db` directly unless the user explicitly asks.
+- Prefer scripts under `backend/scripts/` for imports.
+- Use `python backend/scripts/import_visit_json.py --file <payload.json> --dry-run` before writing visit data.
+- Use `python backend/scripts/import_visit_json.py --file <payload.json> --write` for confirmed imports.
+- Before writing to the real database, create a timestamped backup under `data/backups/`.
+- Use mock mode for experiments: set `HEALTH_MOCK_MODE=1`.
+- Do not delete, rebuild, reset, or bulk-update the real database without explicit user confirmation.
+- After writing, report the inserted IDs and affected row counts.
+- Follow `DB_WRITE_GUIDE.md` for payload shape, date format, attachment paths, and validation rules.

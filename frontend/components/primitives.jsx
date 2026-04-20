@@ -35,17 +35,30 @@ const Chip = ({ children, variant, style }) => (
 
 const Stamp = ({ children }) => <span className="stamp">{children}</span>;
 
-const Avatar = ({ label, size = 'md', ring = false, cat = false, style }) => (
-  <div className={`avatar ${size} ${ring ? 'ring' : ''} ${cat ? 'cat' : ''}`} style={style}>{label}</div>
-);
+const memberAvatarSrc = (member) => {
+  const filename = member?.avatar || member?.photo || member?.name;
+  return filename ? `/public/${encodeURIComponent(filename)}.png` : '';
+};
+
+const Avatar = ({ label, size = 'md', ring = false, cat = false, src = '', alt = '', style }) => {
+  const [failedSrc, setFailedSrc] = React.useState('');
+  const showImage = Boolean(src) && src !== failedSrc;
+  return (
+    <div className={`avatar ${size} ${ring ? 'ring' : ''} ${cat ? 'cat' : ''} ${showImage ? 'has-image' : ''}`} style={style}>
+      {showImage && <img className="avatar__image" src={src} alt={alt || label} onError={() => setFailedSrc(src)} />}
+      <span className="avatar__label">{label}</span>
+    </div>
+  );
+};
 
 const Scribble = ({ children }) => <span className="scribble">{children}</span>;
 
-const Btn = ({ children, primary, ghost, onClick, style, type = 'button' }) => (
+const Btn = ({ children, primary, ghost, disabled, onClick, style, type = 'button' }) => (
   <button
     type={type}
     className={`btn ${primary ? 'primary' : ''} ${ghost ? 'ghost' : ''}`}
     onClick={onClick}
+    disabled={disabled}
     style={style}
   >{children}</button>
 );
@@ -301,4 +314,4 @@ const Tile = ({ k, v, u, warn, trend }) => (
   </div>
 );
 
-Object.assign(window, { HoverTip, Placeholder, Chip, Stamp, Avatar, Scribble, Btn, LineChart, EChartLine, Bars, DashLabel, Tile });
+Object.assign(window, { HoverTip, Placeholder, Chip, Stamp, Avatar, memberAvatarSrc, Scribble, Btn, LineChart, EChartLine, Bars, DashLabel, Tile });

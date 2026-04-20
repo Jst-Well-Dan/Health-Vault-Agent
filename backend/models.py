@@ -14,6 +14,7 @@ class MemberBase(BaseModel):
     blood_type: Optional[str] = None
     role: Optional[str] = None
     species: Optional[str] = None
+    sort_order: Optional[int] = None
     breed: Optional[str] = None
     home_date: Optional[str] = None
     chip_id: Optional[str] = None
@@ -45,6 +46,7 @@ class MemberOut(BaseModel):
     blood_type: Optional[str] = None
     role: Optional[str] = None
     species: str
+    sort_order: int = 0
     breed: Optional[str] = None
     home_date: Optional[str] = None
     chip_id: Optional[str] = None
@@ -59,6 +61,7 @@ class MemberOut(BaseModel):
 class VisitCreate(BaseModel):
     member_key: str
     date: str
+    type: Optional[str] = None
     hospital: Optional[str] = None
     department: Optional[str] = None
     doctor: Optional[str] = None
@@ -156,6 +159,9 @@ class ReminderOut(ReminderCreate):
     id: int
     done: bool = False
     done_at: Optional[str] = None
+    source: str = "manual"
+    rule_key: Optional[str] = None
+    auto_key: Optional[str] = None
 
 
 class AttachmentCreate(BaseModel):

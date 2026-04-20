@@ -129,7 +129,7 @@ const ScreenFamily = ({ members = [], loading = false, onOpenMember }) => {
             onClick={() => onOpenMember(m.key)}
           >
             <div className="family-member-card__head">
-              <Avatar label={m.initial || m.name?.[0] || '?'} size="lg" cat={isPet(m)} ring={false} />
+              <Avatar label={m.initial || m.name?.[0] || '?'} src={memberAvatarSrc(m)} alt={m.name} size="lg" cat={isPet(m)} ring={false} />
               <div className="family-member-card__identity">
                 <div className="family-member-card__name">{m.name}</div>
                 <div className="mono">{memberMeta(m)}</div>

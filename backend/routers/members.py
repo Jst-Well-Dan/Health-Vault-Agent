@@ -20,7 +20,7 @@ def _member_dict(row: Any) -> dict[str, Any]:
 @router.get("/members")
 def list_members() -> list[dict[str, Any]]:
     with get_conn() as conn:
-        rows = conn.execute("SELECT * FROM members ORDER BY created_at, key").fetchall()
+        rows = conn.execute("SELECT * FROM members ORDER BY sort_order, created_at, key").fetchall()
         return [_member_dict(row) for row in rows]
 
 
@@ -39,7 +39,7 @@ def update_member(key: str, payload: MemberUpdate) -> dict[str, Any]:
 
     allowed = {
         "name", "full_name", "initial", "birth_date", "sex", "blood_type", "role",
-        "species", "breed", "home_date", "chip_id", "doctor", "allergies", "chronic", "notes",
+        "species", "sort_order", "breed", "home_date", "chip_id", "doctor", "allergies", "chronic", "notes",
     }
     updates = []
     values = []

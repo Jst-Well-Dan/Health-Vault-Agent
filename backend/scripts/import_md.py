@@ -24,6 +24,13 @@ def _severity(value: str | None) -> str | None:
     return value
 
 
+def _visit_type(visit: dict) -> str:
+    value = visit.get("type")
+    if isinstance(value, str) and value.strip():
+        return value.strip()
+    return "体检" if "体检" in str(visit.get("chief_complaint") or "") else "就医"
+
+
 def import_payload(payload: dict) -> int:
     visit = payload["visit"]
     labs = payload.get("labs", [])
@@ -36,13 +43,14 @@ def import_payload(payload: dict) -> int:
             cur = conn.execute(
                 """
                 INSERT INTO visits
-                  (member_key, date, hospital, department, doctor, chief_complaint,
+                  (member_key, date, type, hospital, department, doctor, chief_complaint,
                    severity, diagnosis, notes, source_file)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 """,
                 (
                     visit["member_key"],
                     visit["date"],
+                    _visit_type(visit),
                     visit.get("hospital"),
                     visit.get("department"),
                     visit.get("doctor"),

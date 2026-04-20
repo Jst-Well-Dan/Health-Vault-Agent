@@ -20,6 +20,7 @@ MEMBERS = [
         "blood_type": None,
         "role": "本人",
         "species": "human",
+        "sort_order": 10,
         "breed": None,
         "home_date": None,
         "chip_id": None,
@@ -38,6 +39,7 @@ MEMBERS = [
         "blood_type": None,
         "role": "妹妹",
         "species": "cat",
+        "sort_order": 20,
         "breed": "英国短毛猫",
         "home_date": "2020-12-11",
         "chip_id": None,
@@ -56,6 +58,7 @@ MEMBERS = [
         "blood_type": None,
         "role": "妹妹",
         "species": "cat",
+        "sort_order": 30,
         "breed": "德文卷毛猫",
         "home_date": "2025-08-08",
         "chip_id": None,
@@ -75,8 +78,8 @@ def main() -> None:
                 """
                 INSERT OR IGNORE INTO members
                   (key, name, full_name, initial, birth_date, sex, blood_type, role,
-                   species, breed, home_date, chip_id, doctor, allergies, chronic, notes)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                   species, sort_order, breed, home_date, chip_id, doctor, allergies, chronic, notes)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 """,
                 (
                     item["key"],
@@ -88,6 +91,7 @@ def main() -> None:
                     item["blood_type"],
                     item["role"],
                     item["species"],
+                    item["sort_order"],
                     item["breed"],
                     item["home_date"],
                     item["chip_id"],
@@ -108,6 +112,7 @@ def main() -> None:
                     blood_type = ?,
                     role = ?,
                     species = ?,
+                    sort_order = ?,
                     breed = ?,
                     home_date = ?,
                     allergies = ?,
@@ -124,6 +129,7 @@ def main() -> None:
                     item["blood_type"],
                     item["role"],
                     item["species"],
+                    item["sort_order"],
                     item["breed"],
                     item["home_date"],
                     json.dumps(item["allergies"], ensure_ascii=False),

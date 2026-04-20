@@ -1,10 +1,11 @@
 from typing import Optional
 
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException
 
 from database import get_conn
 from models import ReminderCreate, ReminderUpdate
 from routers.common import bool_out, require_row, row_to_dict, rows_to_dicts
+from services.auto_reminders import skip_auto_reminder, sync_auto_reminders
 
 
 router = APIRouter(tags=["reminders"])
@@ -51,6 +52,26 @@ def create_reminder(payload: ReminderCreate) -> dict:
         )
         row = row_to_dict(conn.execute("SELECT * FROM reminders WHERE id = ?", (cur.lastrowid,)).fetchone())
         return bool_out(row, "done")
+
+
+@router.post("/reminders/auto/sync")
+def sync_generated_reminders(member: Optional[str] = None) -> dict:
+    rows = sync_auto_reminders(member=member)
+    return {
+        "inserted": len(rows),
+        "items": [bool_out(row, "done") for row in rows],
+    }
+
+
+@router.post("/reminders/{reminder_id}/skip")
+def skip_generated_reminder(reminder_id: int) -> dict:
+    try:
+        row = skip_auto_reminder(reminder_id)
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+    if not row:
+        raise HTTPException(status_code=404, detail="提醒不存在")
+    return bool_out(row_to_dict(row), "done")
 
 
 @router.patch("/reminders/{reminder_id}")

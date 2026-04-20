@@ -1,0 +1,591 @@
+{
+  "visit": {
+    "member_key": "dan",
+    "date": "2023-10-24",
+    "type": "体检",
+    "hospital": "北京市中关村医院健康管理中心",
+    "department": "健康管理中心",
+    "doctor": "王惠娟 / 翟喜峰",
+    "chief_complaint": "年度健康体检",
+    "severity": "轻微",
+    "diagnosis": [
+      "甲状腺滤泡囊肿可能",
+      "TI-RADS II级",
+      "右眼屈光不正",
+      "左眼屈光不正",
+      "中性粒细胞绝对值偏低"
+    ],
+    "notes": "体检提示甲状腺滤泡囊肿较前无明显变化；中性粒细胞绝对值1.73x10^9/L偏低。",
+    "source_file": "data/reports/dan/md/20231024_中关村医院_段东伟_体检报告.md"
+  },
+  "labs": [
+    {
+      "panel": "体格检查",
+      "test_name": "收缩压",
+      "value": "118",
+      "unit": null,
+      "ref_low": null,
+      "ref_high": null,
+      "status": "unknown"
+    },
+    {
+      "panel": "体格检查",
+      "test_name": "舒张压",
+      "value": "72",
+      "unit": null,
+      "ref_low": null,
+      "ref_high": null,
+      "status": "unknown"
+    },
+    {
+      "panel": "体格检查",
+      "test_name": "身高",
+      "value": "168.0",
+      "unit": "cm",
+      "ref_low": null,
+      "ref_high": null,
+      "status": "unknown"
+    },
+    {
+      "panel": "体格检查",
+      "test_name": "体重",
+      "value": "63.0",
+      "unit": "kg",
+      "ref_low": null,
+      "ref_high": null,
+      "status": "unknown"
+    },
+    {
+      "panel": "体格检查",
+      "test_name": "体重指数",
+      "value": "22.32",
+      "unit": null,
+      "ref_low": null,
+      "ref_high": null,
+      "status": "unknown"
+    },
+    {
+      "panel": "体格检查",
+      "test_name": "心率",
+      "value": "66",
+      "unit": "次/分",
+      "ref_low": null,
+      "ref_high": null,
+      "status": "unknown"
+    },
+    {
+      "panel": "眼科",
+      "test_name": "矫正视力(右)",
+      "value": "5.0",
+      "unit": null,
+      "ref_low": null,
+      "ref_high": null,
+      "status": "unknown"
+    },
+    {
+      "panel": "眼科",
+      "test_name": "矫正视力(左)",
+      "value": "5.0",
+      "unit": null,
+      "ref_low": null,
+      "ref_high": null,
+      "status": "unknown"
+    },
+    {
+      "panel": "眼科",
+      "test_name": "辨色力",
+      "value": "正常",
+      "unit": null,
+      "ref_low": null,
+      "ref_high": null,
+      "status": "normal"
+    },
+    {
+      "panel": "眼科",
+      "test_name": "右眼屈光不正",
+      "value": "是",
+      "unit": null,
+      "ref_low": null,
+      "ref_high": null,
+      "status": "abnormal"
+    },
+    {
+      "panel": "眼科",
+      "test_name": "左眼屈光不正",
+      "value": "是",
+      "unit": null,
+      "ref_low": null,
+      "ref_high": null,
+      "status": "abnormal"
+    },
+    {
+      "panel": "甲状腺彩超",
+      "test_name": "甲状腺",
+      "value": "左侧甲状腺滤泡囊肿0.3x0.2 cm，右侧甲状腺滤泡囊肿0.5x0.3 cm，TI-RADS II级",
+      "unit": null,
+      "ref_low": null,
+      "ref_high": null,
+      "status": "abnormal"
+    },
+    {
+      "panel": "泌尿系统彩超",
+      "test_name": "前列腺",
+      "value": "未见明显异常",
+      "unit": null,
+      "ref_low": null,
+      "ref_high": null,
+      "status": "normal"
+    },
+    {
+      "panel": "腹部彩超",
+      "test_name": "肝脏",
+      "value": "未见明显异常",
+      "unit": null,
+      "ref_low": null,
+      "ref_high": null,
+      "status": "normal"
+    },
+    {
+      "panel": "腹部彩超",
+      "test_name": "胆囊",
+      "value": "未见明显异常",
+      "unit": null,
+      "ref_low": null,
+      "ref_high": null,
+      "status": "normal"
+    },
+    {
+      "panel": "腹部彩超",
+      "test_name": "胰脏",
+      "value": "未见明显异常",
+      "unit": null,
+      "ref_low": null,
+      "ref_high": null,
+      "status": "normal"
+    },
+    {
+      "panel": "腹部彩超",
+      "test_name": "脾脏",
+      "value": "未见明显异常",
+      "unit": null,
+      "ref_low": null,
+      "ref_high": null,
+      "status": "normal"
+    },
+    {
+      "panel": "呼气试验",
+      "test_name": "呼气试验",
+      "value": "阴",
+      "unit": null,
+      "ref_low": "0",
+      "ref_high": "4",
+      "status": "normal"
+    },
+    {
+      "panel": "血脂四项",
+      "test_name": "总胆固醇",
+      "value": "4.58",
+      "unit": "mmol/L",
+      "ref_low": "2.82",
+      "ref_high": "5.69",
+      "status": "normal"
+    },
+    {
+      "panel": "血脂四项",
+      "test_name": "甘油三酯",
+      "value": "0.97",
+      "unit": "mmol/L",
+      "ref_low": "0.40",
+      "ref_high": "1.56",
+      "status": "normal"
+    },
+    {
+      "panel": "血脂四项",
+      "test_name": "高密度胆固醇",
+      "value": "1.14",
+      "unit": "mmol/L",
+      "ref_low": "0.80",
+      "ref_high": "1.70",
+      "status": "normal"
+    },
+    {
+      "panel": "血脂四项",
+      "test_name": "低密度胆固醇",
+      "value": "2.66",
+      "unit": "mmol/L",
+      "ref_low": "2.07",
+      "ref_high": "3.10",
+      "status": "normal"
+    },
+    {
+      "panel": "血常规",
+      "test_name": "白细胞(WBC)",
+      "value": "3.67",
+      "unit": "10^9/L",
+      "ref_low": "3.50",
+      "ref_high": "9.50",
+      "status": "normal"
+    },
+    {
+      "panel": "血常规",
+      "test_name": "红细胞",
+      "value": "5.39",
+      "unit": "10^12/L",
+      "ref_low": "4.30",
+      "ref_high": "5.80",
+      "status": "normal"
+    },
+    {
+      "panel": "血常规",
+      "test_name": "血红蛋白",
+      "value": "161.0",
+      "unit": "g/L",
+      "ref_low": "130.00",
+      "ref_high": "175.00",
+      "status": "normal"
+    },
+    {
+      "panel": "血常规",
+      "test_name": "红细胞压积",
+      "value": "47.5",
+      "unit": "%",
+      "ref_low": "40.0",
+      "ref_high": "50.0",
+      "status": "normal"
+    },
+    {
+      "panel": "血常规",
+      "test_name": "红细胞平均体积",
+      "value": "88.1",
+      "unit": "fL",
+      "ref_low": "82.0",
+      "ref_high": "100.0",
+      "status": "normal"
+    },
+    {
+      "panel": "血常规",
+      "test_name": "平均血红蛋白含量",
+      "value": "29.9",
+      "unit": "pg",
+      "ref_low": "27.0",
+      "ref_high": "34.0",
+      "status": "normal"
+    },
+    {
+      "panel": "血常规",
+      "test_name": "平均血红蛋白浓度",
+      "value": "339",
+      "unit": "g/L",
+      "ref_low": "316",
+      "ref_high": "354",
+      "status": "normal"
+    },
+    {
+      "panel": "血常规",
+      "test_name": "RDW-CV",
+      "value": "12.6",
+      "unit": "%",
+      "ref_low": "10.9",
+      "ref_high": "15.4",
+      "status": "normal"
+    },
+    {
+      "panel": "血常规",
+      "test_name": "红细胞体积分布宽度",
+      "value": "40.8",
+      "unit": "fL",
+      "ref_low": "39.0",
+      "ref_high": "46.0",
+      "status": "normal"
+    },
+    {
+      "panel": "血常规",
+      "test_name": "血小板",
+      "value": "198",
+      "unit": "10^9/L",
+      "ref_low": "125.00",
+      "ref_high": "350.00",
+      "status": "normal"
+    },
+    {
+      "panel": "血常规",
+      "test_name": "淋巴细胞绝对值",
+      "value": "1.61",
+      "unit": "10^9/L",
+      "ref_low": "1.10",
+      "ref_high": "3.20",
+      "status": "normal"
+    },
+    {
+      "panel": "血常规",
+      "test_name": "单核细胞绝对值",
+      "value": "0.26",
+      "unit": "10^9/L",
+      "ref_low": "0.10",
+      "ref_high": "0.60",
+      "status": "normal"
+    },
+    {
+      "panel": "血常规",
+      "test_name": "中性粒细胞绝对值",
+      "value": "1.73",
+      "unit": "10^9/L",
+      "ref_low": "1.80",
+      "ref_high": "6.30",
+      "status": "low"
+    },
+    {
+      "panel": "血常规",
+      "test_name": "嗜酸性粒细胞绝对值",
+      "value": "0.06",
+      "unit": "10^9/L",
+      "ref_low": "0.02",
+      "ref_high": "0.52",
+      "status": "normal"
+    },
+    {
+      "panel": "血常规",
+      "test_name": "嗜碱性粒细胞绝对值",
+      "value": "0.01",
+      "unit": "10^9/L",
+      "ref_low": "0.00",
+      "ref_high": "0.06",
+      "status": "normal"
+    },
+    {
+      "panel": "血常规",
+      "test_name": "淋巴细胞百分比",
+      "value": "43.9",
+      "unit": "%",
+      "ref_low": "20.0",
+      "ref_high": "50.0",
+      "status": "normal"
+    },
+    {
+      "panel": "血常规",
+      "test_name": "单核细胞百分比",
+      "value": "7.1",
+      "unit": "%",
+      "ref_low": "3.0",
+      "ref_high": "10.0",
+      "status": "normal"
+    },
+    {
+      "panel": "血常规",
+      "test_name": "中性粒细胞百分比",
+      "value": "47.1",
+      "unit": "%",
+      "ref_low": "40.00",
+      "ref_high": "75.00",
+      "status": "normal"
+    },
+    {
+      "panel": "血常规",
+      "test_name": "嗜碱性粒细胞百分比",
+      "value": "0.3",
+      "unit": "%",
+      "ref_low": "0.0",
+      "ref_high": "1.0",
+      "status": "normal"
+    },
+    {
+      "panel": "血常规",
+      "test_name": "嗜酸性粒细胞百分比",
+      "value": "1.6",
+      "unit": "%",
+      "ref_low": "0.40",
+      "ref_high": "8.00",
+      "status": "normal"
+    },
+    {
+      "panel": "血常规",
+      "test_name": "血小板压积",
+      "value": "0.20",
+      "unit": "%",
+      "ref_low": "0.11",
+      "ref_high": "0.28",
+      "status": "normal"
+    },
+    {
+      "panel": "血常规",
+      "test_name": "大型血小板比率",
+      "value": "26.70",
+      "unit": "%",
+      "ref_low": "13.00",
+      "ref_high": "43.00",
+      "status": "normal"
+    },
+    {
+      "panel": "血常规",
+      "test_name": "平均血小板体积",
+      "value": "10.2",
+      "unit": "fL",
+      "ref_low": "8.0",
+      "ref_high": "12.0",
+      "status": "normal"
+    },
+    {
+      "panel": "血常规",
+      "test_name": "血小板分布宽度",
+      "value": "11.3",
+      "unit": "fL",
+      "ref_low": "9.0",
+      "ref_high": "17.0",
+      "status": "normal"
+    },
+    {
+      "panel": "尿常规",
+      "test_name": "尿酸碱度",
+      "value": "6.5",
+      "unit": null,
+      "ref_low": "5.4",
+      "ref_high": "8.4",
+      "status": "normal"
+    },
+    {
+      "panel": "尿常规",
+      "test_name": "尿比重",
+      "value": "1.025",
+      "unit": null,
+      "ref_low": "1.003",
+      "ref_high": "1.030",
+      "status": "normal"
+    },
+    {
+      "panel": "尿常规",
+      "test_name": "镜检白细胞",
+      "value": "0",
+      "unit": "个/Hp",
+      "ref_low": null,
+      "ref_high": null,
+      "status": "normal"
+    },
+    {
+      "panel": "尿常规",
+      "test_name": "镜检红细胞",
+      "value": "0",
+      "unit": "个/Hp",
+      "ref_low": null,
+      "ref_high": null,
+      "status": "normal"
+    },
+    {
+      "panel": "肝功能",
+      "test_name": "丙氨酸氨基转移酶",
+      "value": "15",
+      "unit": "U/L",
+      "ref_low": "0.00",
+      "ref_high": "40.00",
+      "status": "normal"
+    },
+    {
+      "panel": "肝功能",
+      "test_name": "天门冬氨酸氨基转移酶",
+      "value": "20",
+      "unit": "U/L",
+      "ref_low": "0.00",
+      "ref_high": "40.00",
+      "status": "normal"
+    },
+    {
+      "panel": "肝功能",
+      "test_name": "谷氨酰转肽酶",
+      "value": "19",
+      "unit": "U/L",
+      "ref_low": "0.00",
+      "ref_high": "50.00",
+      "status": "normal"
+    },
+    {
+      "panel": "血糖",
+      "test_name": "葡萄糖",
+      "value": "4.43",
+      "unit": "mmol/L",
+      "ref_low": "3.90",
+      "ref_high": "6.10",
+      "status": "normal"
+    },
+    {
+      "panel": "肾功能",
+      "test_name": "肌酐",
+      "value": "67",
+      "unit": "umol/L",
+      "ref_low": "45.00",
+      "ref_high": "104.00",
+      "status": "normal"
+    },
+    {
+      "panel": "肾功能",
+      "test_name": "尿酸",
+      "value": "395",
+      "unit": "umol/L",
+      "ref_low": "143.00",
+      "ref_high": "463.00",
+      "status": "normal"
+    },
+    {
+      "panel": "肾功能",
+      "test_name": "尿素",
+      "value": "6.31",
+      "unit": "mmol/L",
+      "ref_low": "1.7",
+      "ref_high": "8.3",
+      "status": "normal"
+    },
+    {
+      "panel": "肿瘤标志物",
+      "test_name": "甲胎蛋白",
+      "value": "3.19",
+      "unit": "ng/ml",
+      "ref_low": "0.00",
+      "ref_high": "7.00",
+      "status": "normal"
+    },
+    {
+      "panel": "肿瘤标志物",
+      "test_name": "癌胚抗原",
+      "value": "2.02",
+      "unit": "ng/ml",
+      "ref_low": "0.00",
+      "ref_high": "3.40",
+      "status": "normal"
+    },
+    {
+      "panel": "胸部DR片",
+      "test_name": "胸部DR片印象",
+      "value": "胸像未见明显异常征象",
+      "unit": null,
+      "ref_low": null,
+      "ref_high": null,
+      "status": "normal"
+    },
+    {
+      "panel": "心电图",
+      "test_name": "心电图印象",
+      "value": "窦性心律大致正常心电图",
+      "unit": null,
+      "ref_low": null,
+      "ref_high": null,
+      "status": "normal"
+    }
+  ],
+  "meds": [],
+  "attachments": [
+    {
+      "date": "2023-10-24",
+      "title": "2023-10-24 段东伟体检报告 Markdown",
+      "org": "北京市中关村医院健康管理中心",
+      "tag": "体检报告",
+      "filename": "20231024_中关村医院_段东伟_体检报告.md",
+      "file_path": "data/reports/dan/md/20231024_中关村医院_段东伟_体检报告.md"
+    },
+    {
+      "date": "2023-10-24",
+      "title": "2023-10-24 段东伟体检报告 PDF",
+      "org": "北京市中关村医院健康管理中心",
+      "tag": "体检报告",
+      "filename": "20231024_中关村医院_段东伟_体检报告.pdf",
+      "file_path": "data/reports/dan/pdf/20231024_中关村医院_段东伟_体检报告.pdf"
+    }
+  ]
+}

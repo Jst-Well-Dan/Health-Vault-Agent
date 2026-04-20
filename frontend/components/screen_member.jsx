@@ -1,8 +1,7 @@
 // Member detail screen backed by REST API data.
 
-const HUMAN_TABS = ['概览', '体检报告', '就医记录', '用药', '影像', '附件库', '提醒'];
+const HUMAN_TABS = ['概览', '体检报告', '就医记录', '用药', '附件库', '提醒'];
 const PET_TABS = ['概览', '记事', '疫苗接种', '就医记录', '体重趋势', '附件库', '提醒'];
-const PET_CARE_KINDS = ['驱虫', '换猫砂', '洗澡', '美容', '剪爪', '清耳'];
 
 const apiJson = async (path, options) => {
   const res = await fetch(path, options);
@@ -32,6 +31,26 @@ const formatValue = (value, digits = 1) => {
   return n === null ? (value ?? '—') : Number(n.toFixed(digits)).toString();
 };
 
+const formatWeight = (value) => {
+  const n = extractNumber(value);
+  return n === null ? (value ?? '—') : n.toFixed(2);
+};
+
+const petAgeAtText = (birthDate, atDate) => {
+  if (!birthDate || !atDate) return '';
+  const birth = new Date(`${birthDate}T00:00:00`);
+  const target = new Date(`${atDate}T00:00:00`);
+  if (Number.isNaN(birth.getTime()) || Number.isNaN(target.getTime())) return '';
+  let months = (target.getFullYear() - birth.getFullYear()) * 12 + target.getMonth() - birth.getMonth();
+  if (target.getDate() < birth.getDate()) months -= 1;
+  months = Math.max(0, months);
+  return `年龄 ${Math.floor(months / 12)}岁${months % 12}个月`;
+};
+
+const weightPointNote = (member, weight) => (
+  [weight?.notes, petAgeAtText(member?.birth_date, weight?.date)].filter(Boolean).join(' · ')
+);
+
 const latestByName = (labs) => {
   const map = new Map();
   labs.forEach(lab => {
@@ -50,17 +69,6 @@ const refForLab = (lab) => {
   return null;
 };
 
-const parseRefText = (ref) => {
-  const text = String(ref || '').trim();
-  if (!text || text === '—' || text === '-') return {};
-  const nums = text.match(/-?\d+(?:\.\d+)?/g)?.map(Number).filter(Number.isFinite) || [];
-  if (!nums.length) return {};
-  if (/^[<≤]/.test(text)) return { high: nums[0] };
-  if (/^[>≥]/.test(text)) return { low: nums[0] };
-  if (nums.length >= 2) return { low: Math.min(nums[0], nums[1]), high: Math.max(nums[0], nums[1]) };
-  return {};
-};
-
 const displayRef = (low, high) => {
   if (low != null && high != null) return `${low}–${high}`;
   if (low != null) return `≥${low}`;
@@ -69,21 +77,11 @@ const displayRef = (low, high) => {
 };
 
 const labDirection = (item) => {
-  const value = extractNumber(item?.v ?? item?.value);
-  const refText = parseRefText(item?.ref);
-  const low = extractNumber(item?.refLow ?? item?.ref_low) ?? refText.low ?? null;
-  const high = extractNumber(item?.refHigh ?? item?.ref_high) ?? refText.high ?? null;
-
-  if (value !== null) {
-    if (low !== null && value < low) return 'low';
-    if (high !== null && value > high) return 'high';
-    if (low !== null || high !== null) return 'normal';
-  }
-
   const status = String(item?.status || '').toLowerCase();
   if (status === 'high' || status === 'low') return status;
+  if (status === 'normal') return 'normal';
   if (status === 'abnormal' || item?.warn) return 'abnormal';
-  return 'normal';
+  return 'unknown';
 };
 
 const labDirectionMark = (direction) => {
@@ -100,8 +98,9 @@ const reportFromVisit = (visit, attachment) => ({
   d: visit.date,
   t: visit.chief_complaint || (visit.diagnosis || []).join(' / ') || '就诊记录',
   org: [visit.hospital, visit.department].filter(Boolean).join(' · '),
-  tag: '就医',
+  tag: visit.type || '就医',
   severity: visit.severity,
+  type: visit.type || '就医',
   chiefComplaint: visit.chief_complaint,
   abn: (visit.diagnosis || []).length ? visit.diagnosis : [visit.notes || '已记录'],
   fullNote: visit.note_full,
@@ -124,6 +123,8 @@ const reportFromAttachment = (a) => ({
 
 const reportTooltip = (r) => [r.t, r.d, r.org, r.file].filter(Boolean).join(' · ');
 
+const isCheckupReport = (report) => report.tag === '体检' || report.tag === '体检报告';
+
 const extOf = (file) => {
   const match = String(file || '').toLowerCase().match(/\.([a-z0-9]+)(?:$|\?)/);
   return match ? match[1] : '';
@@ -136,6 +137,19 @@ const previewKind = (file) => {
   if (['md', 'txt', 'csv', 'json'].includes(ext)) return 'text';
   return 'unsupported';
 };
+
+const isImageAttachment = (attachment) => previewKind(attachment?.filename || attachment?.file_path) === 'image';
+const isPdfAttachment = (attachment) => previewKind(attachment?.filename || attachment?.file_path) === 'pdf';
+
+const attachmentFileName = (attachment) => (
+  attachment?.filename || attachment?.file_path || `attachment-${attachment?.id}`
+);
+
+const sortAttachments = (items) => items.slice().sort((a, b) => {
+  const aFile = attachmentFileName(a);
+  const bFile = attachmentFileName(b);
+  return aFile.localeCompare(bFile, 'zh-Hans-CN', { numeric: true, sensitivity: 'base' }) || (a.id || 0) - (b.id || 0);
+});
 
 const listLine = (label, value) => value === undefined || value === null || value === ''
   ? ''
@@ -221,7 +235,7 @@ const speciesText = (m, weights) => {
   const latestWeight = weights[weights.length - 1];
   const chip = m.chip_id ? ` · 芯片 ${m.chip_id}` : '';
   const home = m.home_date ? ` · 到家 ${m.home_date}` : '';
-  return `${m.breed || '猫'} · ${m.sex || '未录称呼'} · ${memberAge(m.birth_date)}岁${home}${latestWeight ? ` · ${formatValue(latestWeight.weight_kg)} kg` : ''}${chip}`;
+  return `${m.breed || '猫'} · ${m.sex || '未录称呼'} · ${memberAge(m.birth_date)}岁${home}${latestWeight ? ` · ${formatWeight(latestWeight.weight_kg)} kg` : ''}${chip}`;
 };
 
 /* ── Static enriched detail for known reports ──────────────── */
@@ -344,10 +358,24 @@ const ReportDetail = ({ report, member, data, memberKey, onClose }) => {
   const [textPreview, setTextPreview] = React.useState('');
   const [textError, setTextError] = React.useState('');
   const [copyState, setCopyState] = React.useState('idle');
+  const [activeAttachmentId, setActiveAttachmentId] = React.useState(report.attachmentId || null);
 
-  const attachmentUrl = report.attachmentId ? `/api/attachments/${report.attachmentId}/file` : '';
-  const downloadUrl = report.attachmentId ? `/api/attachments/${report.attachmentId}/file?download=true` : '';
-  const kind = report.attachmentId ? previewKind(report.file) : 'none';
+  const visit = (data?.visits || []).find(v => v.id === report.visitId) || null;
+  const contextAttachments = React.useMemo(() => sortAttachments((data?.attachments || []).filter(a => (
+    (report.visitId && a.visit_id === report.visitId) || a.id === report.attachmentId
+  ))), [data?.attachments, report.visitId, report.attachmentId]);
+  const imageAttachments = React.useMemo(() => contextAttachments.filter(isImageAttachment), [contextAttachments]);
+  const pdfAttachments = React.useMemo(() => contextAttachments.filter(isPdfAttachment), [contextAttachments]);
+  const selectedAttachment = contextAttachments.find(a => a.id === activeAttachmentId)
+    || pdfAttachments[0]
+    || imageAttachments[0]
+    || contextAttachments.find(a => a.id === report.attachmentId)
+    || null;
+  const selectedFile = selectedAttachment ? attachmentFileName(selectedAttachment) : (report.file || '');
+  const attachmentUrl = selectedAttachment ? `/api/attachments/${selectedAttachment.id}/file` : '';
+  const kind = selectedAttachment ? previewKind(selectedFile) : (report.attachmentId ? previewKind(report.file) : 'none');
+  const imageIndex = selectedAttachment ? imageAttachments.findIndex(a => a.id === selectedAttachment.id) : -1;
+  const canPageImages = imageAttachments.length > 1 && imageIndex >= 0;
 
   const renderMd = (text) => {
     if (!text) return '';
@@ -363,14 +391,35 @@ const ReportDetail = ({ report, member, data, memberKey, onClose }) => {
     setTrendFor(null);
     setVisitLabs([]);
     setCopyState('idle');
+    setActiveAttachmentId(null);
   }, [report.id]);
+
+  React.useEffect(() => {
+    if (pdfAttachments.length) {
+      setActiveAttachmentId(current => (
+        pdfAttachments.some(a => a.id === current) ? current : pdfAttachments[0].id
+      ));
+      return;
+    }
+    if (imageAttachments.length) {
+      setActiveAttachmentId(current => (
+        imageAttachments.some(a => a.id === current) ? current : imageAttachments[0].id
+      ));
+      return;
+    }
+    if (contextAttachments.length) {
+      setActiveAttachmentId(current => (
+        contextAttachments.some(a => a.id === current) ? current : contextAttachments[0].id
+      ));
+    }
+  }, [pdfAttachments, imageAttachments, contextAttachments]);
 
   React.useEffect(() => {
     setTextPreview('');
     setTextError('');
-    if (!report.attachmentId || kind !== 'text') return undefined;
+    if (!selectedAttachment?.id || kind !== 'text') return undefined;
     let ignore = false;
-    fetch(`/api/attachments/${report.attachmentId}/text`)
+    fetch(`/api/attachments/${selectedAttachment.id}/text`)
       .then(res => {
         if (!res.ok) throw new Error(`文本预览失败 · ${res.status}`);
         return res.text();
@@ -378,7 +427,7 @@ const ReportDetail = ({ report, member, data, memberKey, onClose }) => {
       .then(text => { if (!ignore) setTextPreview(text); })
       .catch(err => { if (!ignore) setTextError(err.message || '文本预览失败'); });
     return () => { ignore = true; };
-  }, [report.attachmentId, kind]);
+  }, [selectedAttachment?.id, kind]);
 
   React.useEffect(() => {
     if (!report.visitId || extra.sections) return undefined;
@@ -421,13 +470,15 @@ const ReportDetail = ({ report, member, data, memberKey, onClose }) => {
     abnItems.length ? [{ name: '摘要', items: abnItems }] : []
   ));
 
-  const visit = (data?.visits || []).find(v => v.id === report.visitId) || null;
   const contextLabs = visitLabs.length ? visitLabs : (data?.labs || []).filter(lab => lab.visit_id === report.visitId);
   const contextMeds = (data?.meds || []).filter(med => med.visit_id === report.visitId);
-  const contextAttachments = (data?.attachments || []).filter(a => (
-    (report.visitId && a.visit_id === report.visitId) || a.id === report.attachmentId
-  ));
   const canIncludeText = kind === 'text' && textPreview;
+
+  const pageImage = (delta) => {
+    if (!canPageImages) return;
+    const nextIndex = (imageIndex + delta + imageAttachments.length) % imageAttachments.length;
+    setActiveAttachmentId(imageAttachments[nextIndex].id);
+  };
 
   const handleCopyContext = async () => {
     const context = visitContextText({
@@ -466,7 +517,7 @@ const ReportDetail = ({ report, member, data, memberKey, onClose }) => {
       </div>
       {sec.items.map((item, ii) => {
         const direction = labDirection(item);
-        const abnormal = direction !== 'normal';
+        const abnormal = ['high', 'low', 'abnormal'].includes(direction);
         return (
           <React.Fragment key={ii}>
             <div
@@ -511,8 +562,6 @@ const ReportDetail = ({ report, member, data, memberKey, onClose }) => {
           </div>
         </div>
         <div className="report-actions">
-          {attachmentUrl && <Btn ghost onClick={() => window.open(attachmentUrl, '_blank')}>打开原文件</Btn>}
-          {downloadUrl && <Btn ghost onClick={() => window.open(downloadUrl, '_blank')}>下载</Btn>}
           <Btn primary onClick={onClose}>← 返回</Btn>
         </div>
       </div>
@@ -521,7 +570,7 @@ const ReportDetail = ({ report, member, data, memberKey, onClose }) => {
         <div><span className="mono">日期</span><strong>{date}</strong></div>
         <div><span className="mono">机构</span><strong>{org || '—'}</strong></div>
         <div><span className="mono">医生</span><strong>{doctor}</strong></div>
-        <div><span className="mono">附件</span><strong>{report.file || '未关联'}</strong></div>
+        <div><span className="mono">附件</span><strong>{selectedFile || report.file || '未关联'}</strong></div>
       </div>
 
       <div className="report-detail__body">
@@ -530,17 +579,46 @@ const ReportDetail = ({ report, member, data, memberKey, onClose }) => {
             <div className="report-panel-head">
               <div>
                 <div className="sec-label">原始附件</div>
-                <div className="mono report-file-name">{report.file || '未关联原始文件'}</div>
+                <div className="mono report-file-name">{selectedFile || report.file || '未关联原始文件'}</div>
               </div>
-              {!attachmentUrl && <Chip>结构化记录</Chip>}
+              <div className="report-panel-actions">
+                {attachmentUrl ? <Btn ghost onClick={() => window.open(attachmentUrl, '_blank')}>打开原文件</Btn> : <Chip>结构化记录</Chip>}
+              </div>
             </div>
+            {imageAttachments.length > 0 && (
+              <div className="attachment-pager">
+                <button type="button" className="attachment-pager__btn" onClick={() => pageImage(-1)} disabled={!canPageImages} title="上一张">‹</button>
+                <div className="attachment-pager__status mono">
+                  {imageIndex >= 0 ? `${imageIndex + 1} / ${imageAttachments.length}` : `${imageAttachments.length} 张图片`}
+                </div>
+                <button type="button" className="attachment-pager__btn" onClick={() => pageImage(1)} disabled={!canPageImages} title="下一张">›</button>
+              </div>
+            )}
             <FilePreview
               kind={kind}
-              file={report.file}
+              file={selectedFile || report.file}
               url={attachmentUrl}
               text={textPreview}
               error={textError}
             />
+            {contextAttachments.length > 1 && (
+              <div className="attachment-strip">
+                {contextAttachments.map(a => {
+                  const file = attachmentFileName(a);
+                  return (
+                    <button
+                      type="button"
+                      key={a.id}
+                      className={`attachment-strip__item ${a.id === selectedAttachment?.id ? 'active' : ''}`}
+                      onClick={() => setActiveAttachmentId(a.id)}
+                      title={file}
+                    >
+                      {previewKind(file) === 'image' ? '图片' : previewKind(file) === 'text' ? '文本' : previewKind(file) === 'pdf' ? 'PDF' : '文件'}
+                    </button>
+                  );
+                })}
+              </div>
+            )}
           </div>
 
           <div className="sketch report-ai-card">
@@ -610,15 +688,19 @@ const ReportDetail = ({ report, member, data, memberKey, onClose }) => {
 const FilePreview = ({ kind, file, url, text, error }) => {
   const frameStyle = {
     width: '100%',
+    maxWidth: '100%',
     height: 'calc(100vh - 220px)',
     minHeight: 400,
     border: '1.5px dashed var(--line)',
     borderRadius: 10,
     background: 'var(--paper-2)',
+    display: 'block',
+    overflow: 'hidden',
   };
 
   if (kind === 'pdf') {
-    return <iframe title={file} src={url} style={frameStyle} />;
+    const pdfUrl = url ? `${url}#toolbar=0&navpanes=0&view=FitH&zoom=page-width` : '';
+    return <iframe title={file} src={pdfUrl} style={frameStyle} />;
   }
 
   if (kind === 'image') {
@@ -676,6 +758,7 @@ const ScreenMember = ({ members = [], memberKey, onChangeMember, onDataChanged }
   const [loading, setLoading] = React.useState(false);
   const [error, setError] = React.useState('');
   const [saving, setSaving] = React.useState(false);
+  const [autoBusy, setAutoBusy] = React.useState(false);
 
   React.useEffect(() => {
     if (!TABS.includes(tab)) setTab('概览');
@@ -757,6 +840,10 @@ const ScreenMember = ({ members = [], memberKey, onChangeMember, onDataChanged }
     if (!window.confirm(`标记提醒「${item.title}」为完成？`)) return;
     mutateDaily(() => apiWrite(`/api/reminders/${item.id}`, 'PATCH', { done: true }));
   };
+  const skipReminder = (item) => {
+    if (!window.confirm(`跳过提醒「${item.title}」并进入下一个周期？`)) return;
+    mutateDaily(() => apiWrite(`/api/reminders/${item.id}/skip`, 'POST'));
+  };
   const deleteReminder = (item) => {
     if (!window.confirm(`删除提醒「${item.title}」？`)) return;
     mutateDaily(() => apiWrite(`/api/reminders/${item.id}`, 'DELETE'));
@@ -780,6 +867,21 @@ const ScreenMember = ({ members = [], memberKey, onChangeMember, onDataChanged }
     if (!window.confirm(`删除 ${item.date} 的体重记录？`)) return;
     mutateDaily(() => apiWrite(`/api/weight/${item.id}`, 'DELETE'));
   };
+  const generateAutoReminders = async () => {
+    if (!member?.key) return;
+    setAutoBusy(true);
+    setError('');
+    try {
+      const result = await apiWrite(`/api/reminders/auto/sync?member=${encodeURIComponent(member.key)}`, 'POST');
+      await loadMemberData();
+      if (onDataChanged) await onDataChanged();
+      if (!result.inserted) setError('没有新的自动提醒');
+    } catch (err) {
+      setError(err.message || '自动提醒生成失败');
+    } finally {
+      setAutoBusy(false);
+    }
+  };
 
   if (!member) {
     return <div className="sketch" style={{ padding: 40, textAlign: 'center' }}>正在读取成员档案...</div>;
@@ -790,13 +892,14 @@ const ScreenMember = ({ members = [], memberKey, onChangeMember, onDataChanged }
   attachmentReports.forEach(a => {
     if (!a.visitId) return;
     const prev = primaryAttachmentByVisit.get(a.visitId);
-    if (!prev || (prev.file.endsWith('.md') && !a.file.endsWith('.md'))) {
+    const isNewPdf = extOf(a.file) === 'pdf';
+    const isOldMd = prev?.file.endsWith('.md');
+    const isOldNotPdf = prev && extOf(prev.file) !== 'pdf';
+    if (!prev || (isOldMd && !a.file.endsWith('.md')) || (isNewPdf && isOldNotPdf)) {
       primaryAttachmentByVisit.set(a.visitId, a);
     }
   });
   const visitReports = data.visits.map(v => reportFromVisit(v, primaryAttachmentByVisit.get(v.id)));
-  const allReports = [...visitReports, ...attachmentReports].sort((a, b) => b.d.localeCompare(a.d));
-
   return (
     <div className="binder" style={{ boxShadow: '4px 4px 0 var(--line)' }}>
       <aside className="binder__side">
@@ -868,12 +971,11 @@ const ScreenMember = ({ members = [], memberKey, onChangeMember, onDataChanged }
                   onOpen={setDetail}
                 />
               )}
-              {!isCat && tab === '体检报告' && <TabReports reports={attachmentReports.filter(r => r.tag === '体检')} kind="体检" onOpen={setDetail} />}
+              {!isCat && tab === '体检报告' && <TabCheckup data={data} memberKey={member.key} reports={visitReports.filter(isCheckupReport)} onOpen={setDetail} />}
               {!isCat && tab === '就医记录' && <TabReports reports={visitReports} kind="就医" onOpen={setDetail} />}
               {!isCat && tab === '用药' && <TabMeds meds={data.meds} visits={data.visits} onAdd={() => openCreate('med')} onEdit={(item) => editItem('med', item)} onStop={stopMed} onDelete={deleteMed} />}
-              {!isCat && tab === '影像' && <TabImaging reports={attachmentReports.filter(r => /\.(jpg|jpeg|png|webp|dcm)$/i.test(r.file))} onOpen={setDetail} />}
               {!isCat && tab === '附件库' && <TabAttachments reports={attachmentReports} onOpen={setDetail} />}
-              {!isCat && tab === '提醒' && <TabReminders items={data.reminders} onAdd={() => openCreate('reminder')} onEdit={(item) => editItem('reminder', item)} onDone={completeReminder} onDelete={deleteReminder} />}
+              {!isCat && tab === '提醒' && <TabReminders items={data.reminders} autoBusy={autoBusy} onGenerateAuto={generateAutoReminders} onAdd={() => openCreate('reminder')} onEdit={(item) => editItem('reminder', item)} onDone={completeReminder} onSkip={skipReminder} onDelete={deleteReminder} />}
 
               {isCat && tab === '概览' && (
                 <TabPetOverview
@@ -889,10 +991,10 @@ const ScreenMember = ({ members = [], memberKey, onChangeMember, onDataChanged }
               )}
               {isCat && tab === '记事' && <TabPetCare reminders={data.reminders} attachments={data.attachments} onAdd={() => openCreate('care')} onEdit={(item) => editItem('care', item)} onDelete={deleteReminder} />}
               {isCat && tab === '疫苗接种' && <TabVax labs={data.labs} attachments={data.attachments} />}
-              {isCat && tab === '就医记录' && <TabReports reports={allReports.filter(r => r.tag === '就医' || r.tag === '体检')} kind="就医" onOpen={setDetail} />}
+              {isCat && tab === '就医记录' && <TabReports reports={visitReports} kind="就医" onOpen={setDetail} />}
               {isCat && tab === '体重趋势' && <TabPetWeight member={member} weights={data.weights} onAdd={() => openCreate('weight')} onDelete={deleteWeight} />}
               {isCat && tab === '附件库' && <TabAttachments reports={attachmentReports} onOpen={setDetail} />}
-              {isCat && tab === '提醒' && <TabReminders items={data.reminders.filter(r => !r.done)} onAdd={() => openCreate('reminder')} onEdit={(item) => editItem('reminder', item)} onDone={completeReminder} onDelete={deleteReminder} />}
+              {isCat && tab === '提醒' && <TabReminders items={data.reminders.filter(r => !r.done)} autoBusy={autoBusy} onGenerateAuto={generateAutoReminders} onAdd={() => openCreate('reminder')} onEdit={(item) => editItem('reminder', item)} onDone={completeReminder} onSkip={skipReminder} onDelete={deleteReminder} />}
             </>
           )}
         </div>
@@ -1002,18 +1104,15 @@ const ReminderForm = ({ item, saving, onSubmit, onCancel }) => {
 const CareLogForm = ({ item, saving, onSubmit, onCancel }) => {
   const [form, setForm] = React.useState({
     date: item?.date || todayIso(),
-    kind: item?.kind || PET_CARE_KINDS[0],
+    kind: item?.kind || '记事',
     title: item?.title || '',
     notes: item?.notes || '',
   });
   const set = (key, value) => setForm(prev => ({ ...prev, [key]: value }));
-  const handleKind = (k) => setForm(prev => ({ ...prev, kind: k, title: prev.title || k }));
   return (
     <form className="daily-form" onSubmit={(e) => { e.preventDefault(); onSubmit({ ...form, title: form.title || form.kind }, item); }}>
       <label>日期<input required type="date" value={form.date} onChange={e => set('date', e.target.value)} /></label>
-      <label>类型<select value={form.kind} onChange={e => handleKind(e.target.value)}>
-        {PET_CARE_KINDS.map(k => <option key={k} value={k}>{k}</option>)}
-      </select></label>
+      <label>类型<input required value={form.kind} onChange={e => set('kind', e.target.value)} placeholder="例如：驱虫 / 换猫砂 / 洗澡" /></label>
       <label>备注标题<input value={form.title} onChange={e => set('title', e.target.value)} placeholder={`例如：${form.kind}（可选）`} /></label>
       <label className="span-2">备注<textarea value={form.notes} onChange={e => set('notes', e.target.value)} rows="2" /></label>
       <div className="form-actions">
@@ -1210,7 +1309,7 @@ const TabOverview = ({ member, labs, visits, meds = [], reminders = [], attachme
                     <div className="timeline-title">{item.t}</div>
                     <div className="mono timeline-meta">{item.org || '医疗机构'} · {relationText(item.abn, '已记录')}</div>
                     <div className="timeline-tags">
-                      <Chip variant="accent">就医</Chip>
+                      <Chip variant="accent">{item.tag || item.type || '就医'}</Chip>
                       {reportChipLabels(item).map((tag, i) => (
                         <Chip key={`${item.id}-${i}`} variant={severityBadgeVariant(item.severity)}>{tag}</Chip>
                       ))}
@@ -1303,9 +1402,19 @@ const MiniTrend = ({ memberKey, testName }) => {
 
   const points = (trend?.points || []).map(p => p.value);
   const ref = trend ? refForLab({ ref_low: trend.ref_low, ref_high: trend.ref_high }) : null;
-  const latest = points[points.length - 1];
-  const direction = labDirection({ v: latest, refLow: trend?.ref_low, refHigh: trend?.ref_high });
-  const warn = direction !== 'normal';
+  const latestPoint = (trend?.points || [])[points.length - 1];
+  const direction = labDirection(latestPoint);
+  const hasKnownStatus = ['high', 'low', 'abnormal', 'normal'].includes(direction);
+  const warn = ['high', 'low', 'abnormal'].includes(direction);
+  const statusLabel = !hasKnownStatus
+    ? '状态未标记'
+    : direction === 'high'
+      ? '当前偏高'
+      : direction === 'low'
+        ? '当前偏低'
+        : warn
+          ? '当前异常'
+          : '在参考范围内';
 
   if (points.length < 2) {
     return <div className="mono" style={{ color: 'var(--ink-soft)', padding: '8px 0', fontSize: 11 }}>历史记录不足以绘图</div>;
@@ -1317,8 +1426,8 @@ const MiniTrend = ({ memberKey, testName }) => {
         <span className="mono" style={{ color: 'var(--ink-soft)', fontSize: 10 }}>
           {points.length} 次记录{ref ? ` · 参考 ${ref[0]}–${ref[1]} ${trend?.unit || ''}` : ''}
         </span>
-        <span className="mono" style={{ color: warn ? 'var(--danger)' : 'var(--ok)', fontSize: 10 }}>
-          {direction === 'high' ? '当前偏高' : direction === 'low' ? '当前偏低' : warn ? '当前异常' : '在参考范围内'}
+        <span className="mono" style={{ color: !hasKnownStatus ? 'var(--ink-soft)' : warn ? 'var(--danger)' : 'var(--ok)', fontSize: 10 }}>
+          {statusLabel}
         </span>
       </div>
       <EChartLine
@@ -1330,6 +1439,132 @@ const MiniTrend = ({ memberKey, testName }) => {
         refBand={ref}
         emptyText="暂无指标趋势"
       />
+    </div>
+  );
+};
+
+/* ── Checkup Tab ─────────────────────────────────────────────── */
+const CheckupLabRow = ({ item, memberKey, autoExpanded }) => {
+  const direction = labDirection(item);
+  const abnormal = ['high', 'low', 'abnormal'].includes(direction);
+  const [expanded, setExpanded] = React.useState(autoExpanded);
+
+  return (
+    <div className="ck-lab-item">
+      <div
+        className={`ck-lab-row ${abnormal ? 'ck-lab-row--abn' : ''}`}
+        onClick={() => setExpanded(e => !e)}
+        title="点击折叠/展开趋势"
+      >
+        <div className="ck-lab-name">{item.k}</div>
+        <div className="ck-lab-val" style={{ color: abnormal ? 'var(--danger)' : 'var(--ink)' }}>
+          {item.v}{labDirectionMark(direction)}
+        </div>
+        <div className="mono ck-lab-unit">{item.u}</div>
+        <div className="mono ck-lab-ref">{item.ref}</div>
+        <div className="mono ck-lab-chevron">{expanded ? '▲' : '▼'}</div>
+      </div>
+      {expanded && (
+        <div className="ck-trend-wrap">
+          <MiniTrend memberKey={memberKey} testName={item.k} />
+        </div>
+      )}
+    </div>
+  );
+};
+
+const TabCheckup = ({ data, memberKey, reports, onOpen }) => {
+  const checkupReports = React.useMemo(() => (
+    reports.slice().sort((a, b) => b.d.localeCompare(a.d))
+  ), [reports]);
+  const [selectedId, setSelectedId] = React.useState(null);
+  const [showNormal, setShowNormal] = React.useState(false);
+
+  const selected = checkupReports.find(r => r.id === selectedId) || checkupReports[0] || null;
+  const effectiveId = selected?.id ?? null;
+
+  const selectCheckup = (id) => { setSelectedId(id); setShowNormal(false); };
+
+  const extra = selected ? (DETAIL_EXTRA[selected.file] || {}) : {};
+
+  const labItems = React.useMemo(() => {
+    if (extra.sections) {
+      return extra.sections.flatMap(sec => sec.items.map(item => ({ ...item, panel: sec.name })));
+    }
+    if (!selected?.visitId) return [];
+    return data.labs
+      .filter(l => l.visit_id === selected.visitId)
+      .map(lab => ({
+        k: lab.test_name,
+        v: lab.value,
+        u: lab.unit || '',
+        ref: displayRef(lab.ref_low, lab.ref_high),
+        status: lab.status,
+        panel: lab.panel,
+      }));
+  }, [extra.sections, selected?.visitId, data.labs]);
+
+  const abnormalItems = labItems.filter(item => ['high', 'low', 'abnormal'].includes(labDirection(item)));
+  const normalItems = labItems.filter(item => !['high', 'low', 'abnormal'].includes(labDirection(item)));
+
+  if (checkupReports.length === 0) {
+    return <div style={{ padding: 40, textAlign: 'center', color: 'var(--ink-soft)' }}>暂无体检报告记录</div>;
+  }
+
+  return (
+    <div className="checkup-tab">
+      <div className="checkup-selector">
+        {checkupReports.map(r => (
+          <button
+            key={r.id}
+            className={`checkup-sel-btn ${r.id === effectiveId ? 'active' : ''}`}
+            onClick={() => selectCheckup(r.id)}
+          >
+            <div className="mono">{r.d}</div>
+            <div className="hand" style={{ fontSize: 15, fontWeight: 700 }}>{r.t || r.org}</div>
+          </button>
+        ))}
+      </div>
+
+      {selected && (
+        <div>
+          <div className="checkup-summary-bar">
+            <span className="mono">共 {labItems.length} 项</span>
+            {abnormalItems.length > 0 && (
+              <span className="mono checkup-summary-bar__abn">异常 {abnormalItems.length} 项</span>
+            )}
+            <span className="mono" style={{ color: 'var(--ok)' }}>正常 {normalItems.length} 项</span>
+            {extra.conclusion && (
+              <span className="mono checkup-summary-bar__note">{extra.conclusion.slice(0, 60)}{extra.conclusion.length > 60 ? '…' : ''}</span>
+            )}
+            <Btn ghost onClick={() => onOpen && onOpen(selected)}>完整报告 →</Btn>
+          </div>
+
+          {abnormalItems.length > 0 && (
+            <div className="checkup-section checkup-section--abn sketch">
+              <div className="checkup-section-head">
+                <div className="sec-label" style={{ color: 'var(--danger)' }}>异常指标</div>
+                <div className="mono" style={{ color: 'var(--ink-soft)' }}>{abnormalItems.length} 项 · 点击行可折叠趋势</div>
+              </div>
+              {abnormalItems.map((item, i) => (
+                <CheckupLabRow key={`${item.k}-${i}`} item={item} memberKey={memberKey} autoExpanded={false} />
+              ))}
+            </div>
+          )}
+
+          {normalItems.length > 0 && (
+            <div className="checkup-section sketch">
+              <button className="checkup-normal-toggle" onClick={() => setShowNormal(v => !v)}>
+                <div className="sec-label">正常指标</div>
+                <div className="mono">{normalItems.length} 项&nbsp;&nbsp;{showNormal ? '▲ 收起' : '▼ 展开'}</div>
+              </button>
+              {showNormal && normalItems.map((item, i) => (
+                <CheckupLabRow key={`${item.k}-${i}`} item={item} memberKey={memberKey} autoExpanded={false} />
+              ))}
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 };
@@ -1643,25 +1878,6 @@ const TabMeds = ({ meds, visits = [], onAdd, onEdit, onStop, onDelete }) => {
   );
 };
 
-const TabImaging = ({ reports, onOpen }) => (
-  <div>
-    <DashLabel right={`${reports.length} 份`}>影像资料</DashLabel>
-    {reports.length === 0 ? (
-      <div style={{ padding: 40, textAlign: 'center', color: 'var(--ink-soft)' }}>暂无图片或影像附件</div>
-    ) : (
-      <div className="grid-4">
-        {reports.map(r => (
-          <div key={r.id} className="sketch" style={{ padding: 10, cursor: 'pointer' }} onClick={() => onOpen && onOpen(r)}>
-            <Placeholder label={`[ ${r.file} ]`} h={120} tooltip={reportTooltip(r)} />
-            <div style={{ fontFamily: 'Caveat, cursive', fontSize: 20, fontWeight: 700, marginTop: 6 }}>{r.t}</div>
-            <div className="mono" style={{ color: 'var(--ink-soft)' }}>{r.d} · {r.org}</div>
-          </div>
-        ))}
-      </div>
-    )}
-  </div>
-);
-
 const TabAttachments = ({ reports, onOpen }) => (
   <div>
     <DashLabel right={`${reports.length} 份文件`}>附件库</DashLabel>
@@ -1680,28 +1896,41 @@ const TabAttachments = ({ reports, onOpen }) => (
   </div>
 );
 
-const TabReminders = ({ items, onAdd, onEdit, onDone, onDelete }) => (
+const TabReminders = ({ items, autoBusy, onGenerateAuto, onAdd, onEdit, onDone, onSkip, onDelete }) => (
   <div>
     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
       <DashLabel right={`${items.length} 条`}>我的提醒</DashLabel>
-      {onAdd && <Btn primary onClick={onAdd}>+ 新增提醒</Btn>}
+      <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', justifyContent: 'flex-end' }}>
+        {onGenerateAuto && <Btn ghost disabled={autoBusy} onClick={onGenerateAuto}>{autoBusy ? '生成中...' : '自动生成'}</Btn>}
+        {onAdd && <Btn primary onClick={onAdd}>+ 新增提醒</Btn>}
+      </div>
     </div>
     {items.length === 0 ? (
       <div style={{ padding: 40, textAlign: 'center', color: 'var(--ink-soft)' }}>无提醒</div>
     ) : (
-      <div className="row-list">
-        {items.map(r => (
-          <div key={r.id} className="row">
-            <span className="mono">{r.date}</span>
-            <div style={{ fontFamily: 'Caveat, cursive', fontSize: 20, fontWeight: 700 }}>{r.title}</div>
-            <Chip variant={r.kind === '宠物' || r.kind === '驱虫' ? 'accent-3' : r.kind === '就医' ? 'accent' : 'accent-2'}>{r.kind}</Chip>
-            <div style={{ display: 'flex', gap: 4, justifyContent: 'flex-end', flexWrap: 'wrap' }}>
-              {onEdit && <Btn ghost onClick={() => onEdit(r)}>编辑</Btn>}
-              {onDone && <Btn ghost onClick={() => onDone(r)}>完成</Btn>}
-              {onDelete && <Btn ghost onClick={() => onDelete(r)}>删除</Btn>}
+      <div className="row-list reminders-row-list">
+        {items.map(r => {
+          const overdue = daysFromToday(r.date) < 0;
+          return (
+            <div key={r.id} className={`row reminder-row ${overdue ? 'is-overdue' : ''}`}>
+              <span className="mono reminder-row__date">{r.date}</span>
+              <div className="reminder-row__body">
+                <div className="reminder-row__title">{r.title}</div>
+                <div className="reminder-row__tags">
+                  <Chip variant={r.kind === '宠物' || r.kind === '驱虫' ? 'accent-3' : r.kind === '就医' ? 'accent' : 'accent-2'}>{r.kind}</Chip>
+                  {r.source === 'auto' && <Chip variant="accent-3">自动</Chip>}
+                  {overdue && <Chip variant="danger">已过期</Chip>}
+                </div>
+              </div>
+              <div className="reminder-row__actions">
+                {onEdit && <Btn ghost onClick={() => onEdit(r)}>编辑</Btn>}
+                {onDone && <Btn ghost onClick={() => onDone(r)}>完成</Btn>}
+                {onSkip && r.source === 'auto' && overdue && <Btn ghost onClick={() => onSkip(r)}>下次再说</Btn>}
+                {onDelete && <Btn ghost onClick={() => onDelete(r)}>删除</Btn>}
+              </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
     )}
   </div>
@@ -1759,7 +1988,10 @@ const TabPetOverview = ({ member, labs, visits, meds, weights, reminders, attach
   attachments.map(reportFromAttachment).forEach(a => {
     if (!a.visitId) return;
     const prev = primaryAttachmentByVisit.get(a.visitId);
-    if (!prev || (prev.file.endsWith('.md') && !a.file.endsWith('.md'))) {
+    const isNewPdf = extOf(a.file) === 'pdf';
+    const isOldMd = prev?.file.endsWith('.md');
+    const isOldNotPdf = prev && extOf(prev.file) !== 'pdf';
+    if (!prev || (isOldMd && !a.file.endsWith('.md')) || (isNewPdf && isOldNotPdf)) {
       primaryAttachmentByVisit.set(a.visitId, a);
     }
   });
@@ -1778,7 +2010,7 @@ const TabPetOverview = ({ member, labs, visits, meds, weights, reminders, attach
     id: `weight-${w.id}`,
     date: w.date,
     kind: '体重',
-    title: `${formatValue(w.weight_kg, 2)} kg`,
+    title: `${formatWeight(w.weight_kg)} kg`,
     meta: w.notes || '体重记录',
   }));
   const medRecords = meds.map(m => ({
@@ -1789,11 +2021,11 @@ const TabPetOverview = ({ member, labs, visits, meds, weights, reminders, attach
     meta: [m.dose, m.freq, m.ongoing ? '在用' : '已停'].filter(Boolean).join(' · '),
   }));
   const careRecords = reminders
-    .filter(r => r.done && PET_CARE_KINDS.includes(r.kind))
+    .filter(r => r.done)
     .map(r => ({
       id: `care-${r.id}`,
       date: r.date,
-      kind: r.kind,
+      kind: r.kind || '记事',
       title: r.title,
       meta: '记事记录',
     }));
@@ -1830,7 +2062,7 @@ const TabPetOverview = ({ member, labs, visits, meds, weights, reminders, attach
             </div>
             <div>
               <span>体重</span>
-              <strong>{latestWeight ? `${formatValue(latestWeight.weight_kg, 2)} kg` : '未记录'}</strong>
+              <strong>{latestWeight ? `${formatWeight(latestWeight.weight_kg)} kg` : '未记录'}</strong>
               {weightDelta !== null && (
                 <small className="mono" style={{ color: weightDelta > 0 ? 'var(--danger)' : 'var(--ok)' }}>
                   较上次 {weightDelta >= 0 ? '+' : ''}{weightDelta.toFixed(2)} kg
@@ -1887,11 +2119,11 @@ const TabPetOverview = ({ member, labs, visits, meds, weights, reminders, attach
         <div className="sketch pet-trend-card">
           <DashLabel right={`${weights.length} 条`}>体重趋势</DashLabel>
           <div className="pet-trend-card__value">
-            {latestWeight ? `${formatValue(latestWeight.weight_kg, 2)} kg` : '暂无'}
+            {latestWeight ? `${formatWeight(latestWeight.weight_kg)} kg` : '暂无'}
           </div>
           {weights.length ? (
             <LineChart
-              points={weights.slice(-8).map(w => ({ date: w.date, value: w.weight_kg, notes: w.notes }))}
+              points={weights.slice(-8).map(w => ({ date: w.date, value: w.weight_kg, notes: weightPointNote(member, w) }))}
               w={420}
               h={70}
               unit="kg"
@@ -1931,11 +2163,12 @@ const TabPetOverview = ({ member, labs, visits, meds, weights, reminders, attach
 
 const TabPetCare = ({ reminders, attachments, onAdd, onEdit, onDelete }) => {
   const [filter, setFilter] = React.useState('全部');
-  const careReminders = reminders.filter(r => PET_CARE_KINDS.includes(r.kind) && r.done);
+  const careReminders = reminders
+    .filter(r => r.done)
+    .map(r => ({ ...r, kind: r.kind || '记事' }));
   const careAttachments = attachments
-    .filter(a => PET_CARE_KINDS.includes(a.tag))
-    .map(a => ({ id: `att-${a.id}`, date: a.date, title: a.title, kind: a.tag, done: true }));
-  const allItems = [...careReminders, ...careAttachments].sort((a, b) => b.date.localeCompare(a.date));
+    .map(a => ({ id: `att-${a.id}`, date: a.date, title: a.title, kind: a.tag || '附件', done: true }));
+  const allItems = [...careReminders, ...careAttachments].sort((a, b) => (b.date || '').localeCompare(a.date || ''));
   const kinds = ['全部', ...new Set(allItems.map(x => x.kind))];
   const displayed = filter === '全部' ? allItems : allItems.filter(x => x.kind === filter);
   return (
@@ -2000,7 +2233,7 @@ const TabVax = ({ labs, attachments }) => {
 
 const TabPetWeight = ({ member, weights, onAdd, onDelete }) => {
   const [selectedWeightId, setSelectedWeightId] = React.useState(null);
-  const chartPoints = weights.map(w => ({ ...w, value: w.weight_kg }));
+  const chartPoints = weights.map(w => ({ ...w, value: w.weight_kg, notes: weightPointNote(member, w) }));
   const latest = weights[weights.length - 1];
   const prev = weights.length >= 2 ? weights[weights.length - 2] : null;
   const delta = latest && prev ? latest.weight_kg - prev.weight_kg : 0;
@@ -2019,7 +2252,7 @@ const TabPetWeight = ({ member, weights, onAdd, onDelete }) => {
       <div className="sketch" style={{ padding: 18 }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 6 }}>
           <div>
-            <div style={{ fontFamily: 'Caveat, cursive', fontSize: 44, fontWeight: 700, lineHeight: 1 }}>{latest ? formatValue(latest.weight_kg) : '—'} kg</div>
+            <div style={{ fontFamily: 'Caveat, cursive', fontSize: 44, fontWeight: 700, lineHeight: 1 }}>{latest ? formatWeight(latest.weight_kg) : '—'} kg</div>
             <span className="mono" style={{ color: delta > 0 ? 'var(--danger)' : 'var(--ok)' }}>{delta > 0 ? '↑' : '↓'} {Math.abs(delta).toFixed(2)} kg · 较上次</span>
           </div>
           <div style={{ display: 'flex', gap: 6 }}>
@@ -2042,7 +2275,7 @@ const TabPetWeight = ({ member, weights, onAdd, onDelete }) => {
         </div>
         {selectedWeight && (
           <div className="mono" style={{ marginTop: 8, color: 'var(--ink-soft)' }}>
-            图中选中 · {selectedWeight.date} · {formatValue(selectedWeight.weight_kg, 2)} kg · {selectedWeight.notes || '体重记录'}
+            图中选中 · {selectedWeight.date} · {formatWeight(selectedWeight.weight_kg)} kg · {selectedWeight.notes || '体重记录'}
           </div>
         )}
       </div>
@@ -2056,7 +2289,7 @@ const TabPetWeight = ({ member, weights, onAdd, onDelete }) => {
             >
               <span className="mono">{w.date}</span>
               <div>{w.notes || '体重记录'}</div>
-              <Chip>{formatValue(w.weight_kg, 2)} kg</Chip>
+              <Chip>{formatWeight(w.weight_kg)} kg</Chip>
               <Btn ghost onClick={() => onDelete(w)}>删除</Btn>
             </div>
           ))}

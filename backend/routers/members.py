@@ -1,4 +1,6 @@
 from typing import Any
+from pathlib import Path
+from urllib.parse import quote
 
 from fastapi import APIRouter
 
@@ -8,12 +10,34 @@ from routers.common import json_dumps, json_loads, require_row
 
 
 router = APIRouter(tags=["members"])
+PUBLIC_DIR = Path(__file__).resolve().parents[2] / "data" / "public"
+AVATAR_EXTS = {".jpg", ".jpeg", ".png", ".webp", ".gif"}
+
+
+def _public_url(path: Path) -> str:
+    rel = path.relative_to(PUBLIC_DIR).as_posix()
+    return "/public/" + quote(rel)
+
+
+def _find_avatar_url(member_key: str) -> str | None:
+    if not PUBLIC_DIR.exists():
+        return None
+
+    key = str(member_key or "").strip().lower()
+    if not key:
+        return None
+
+    for path in sorted(PUBLIC_DIR.rglob("*")):
+        if path.is_file() and path.suffix.lower() in AVATAR_EXTS and path.stem.lower() == key:
+            return _public_url(path)
+    return None
 
 
 def _member_dict(row: Any) -> dict[str, Any]:
     item = dict(row)
     item["allergies"] = json_loads(item.get("allergies"))
     item["chronic"] = json_loads(item.get("chronic"))
+    item["avatar_url"] = _find_avatar_url(item.get("key", ""))
     return item
 
 

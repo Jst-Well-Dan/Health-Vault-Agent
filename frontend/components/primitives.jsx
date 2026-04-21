@@ -36,7 +36,8 @@ const Chip = ({ children, variant, style }) => (
 const Stamp = ({ children }) => <span className="stamp">{children}</span>;
 
 const memberAvatarSrc = (member) => {
-  const filename = member?.avatar || member?.photo || member?.name;
+  if (member?.avatar_url) return member.avatar_url;
+  const filename = member?.avatar || member?.photo || member?.key || member?.name;
   return filename ? `/public/${encodeURIComponent(filename)}.png` : '';
 };
 

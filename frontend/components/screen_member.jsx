@@ -931,18 +931,18 @@ const ScreenMember = ({ members = [], memberKey, onChangeMember, onDataChanged }
       </aside>
 
       <div className="binder__body" style={{ position: 'relative' }}>
-        <div style={{
+        <div className="member-hero" style={{
           padding: '18px 22px', display: 'flex', justifyContent: 'space-between',
           alignItems: 'center', borderBottom: '2px solid var(--line)',
           background: isCat ? 'color-mix(in oklab, var(--accent-3) 28%, var(--paper))' : 'var(--paper)',
         }}>
-          <div style={{ display: 'flex', gap: 16, alignItems: 'center' }}>
+          <div className="member-hero__identity" style={{ display: 'flex', gap: 16, alignItems: 'center' }}>
             <Avatar label={member.initial || member.name?.[0] || '?'} src={memberAvatarSrc(member)} alt={member.name} size="xl" cat={isCat} ring={memberWarn(member) || isCat} />
-            <div>
+            <div className="member-hero__text">
               <div className="mono" style={{ color: 'var(--ink-soft)' }}>
                 {isCat ? '宠物档案 · ' : '档案 · '}{member.full_name || member.name}
               </div>
-              <div style={{ fontFamily: 'Caveat, cursive', fontSize: 42, fontWeight: 700, lineHeight: 1 }}>
+              <div className="member-hero__name" style={{ fontFamily: 'Caveat, cursive', fontSize: 42, fontWeight: 700, lineHeight: 1 }}>
                 <Scribble>{member.name}</Scribble>
               </div>
               <div className="mono" style={{ color: 'var(--ink-soft)', marginTop: 6 }}>
@@ -950,7 +950,7 @@ const ScreenMember = ({ members = [], memberKey, onChangeMember, onDataChanged }
               </div>
             </div>
           </div>
-          <div style={{ display: 'flex', gap: 6 }}>
+          <div className="member-hero__actions" style={{ display: 'flex', gap: 6 }}>
             <Btn primary onClick={openChooser}>+ 新增记录</Btn>
           </div>
         </div>
@@ -961,7 +961,7 @@ const ScreenMember = ({ members = [], memberKey, onChangeMember, onDataChanged }
           ))}
         </div>
 
-        <div style={{ padding: 22, background: 'var(--paper)' }}>
+        <div className="member-content" style={{ padding: 22, background: 'var(--paper)' }}>
           {error && <div className="sketch" style={{ padding: 14, marginBottom: 14, color: 'var(--danger)' }}>{error}</div>}
           {loading && <div className="mono" style={{ marginBottom: 14, color: 'var(--ink-soft)' }}>正在同步成员数据...</div>}
 

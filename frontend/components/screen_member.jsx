@@ -767,7 +767,6 @@ const ScreenMember = ({ members = [], memberKey, onChangeMember, onDataChanged }
   const [loading, setLoading] = React.useState(false);
   const [error, setError] = React.useState('');
   const [saving, setSaving] = React.useState(false);
-  const [autoBusy, setAutoBusy] = React.useState(false);
 
   React.useEffect(() => {
     if (!TABS.includes(tab)) setTab('概览');
@@ -876,22 +875,6 @@ const ScreenMember = ({ members = [], memberKey, onChangeMember, onDataChanged }
     if (!window.confirm(`删除 ${item.date} 的体重记录？`)) return;
     mutateDaily(() => apiWrite(`/api/weight/${item.id}`, 'DELETE'));
   };
-  const generateAutoReminders = async () => {
-    if (!member?.key) return;
-    setAutoBusy(true);
-    setError('');
-    try {
-      const result = await apiWrite(`/api/reminders/auto/sync?member=${encodeURIComponent(member.key)}`, 'POST');
-      await loadMemberData();
-      if (onDataChanged) await onDataChanged();
-      if (!result.inserted) setError('没有新的自动提醒');
-    } catch (err) {
-      setError(err.message || '自动提醒生成失败');
-    } finally {
-      setAutoBusy(false);
-    }
-  };
-
   if (!member) {
     return <div className="sketch" style={{ padding: 40, textAlign: 'center' }}>正在读取成员档案...</div>;
   }
@@ -984,7 +967,7 @@ const ScreenMember = ({ members = [], memberKey, onChangeMember, onDataChanged }
               {!isCat && tab === '就医记录' && <TabReports reports={visitReports} kind="就医" onOpen={setDetail} />}
               {!isCat && tab === '用药' && <TabMeds meds={data.meds} visits={data.visits} onAdd={() => openCreate('med')} onEdit={(item) => editItem('med', item)} onStop={stopMed} onDelete={deleteMed} />}
               {!isCat && tab === '附件库' && <TabAttachments reports={attachmentReports} onOpen={setDetail} />}
-              {!isCat && tab === '提醒' && <TabReminders items={data.reminders} autoBusy={autoBusy} onGenerateAuto={generateAutoReminders} onAdd={() => openCreate('reminder')} onEdit={(item) => editItem('reminder', item)} onDone={completeReminder} onSkip={skipReminder} onDelete={deleteReminder} />}
+              {!isCat && tab === '提醒' && <TabReminders items={data.reminders} onAdd={() => openCreate('reminder')} onEdit={(item) => editItem('reminder', item)} onDone={completeReminder} onSkip={skipReminder} onDelete={deleteReminder} />}
 
               {isCat && tab === '概览' && (
                 <TabPetOverview
@@ -1003,7 +986,7 @@ const ScreenMember = ({ members = [], memberKey, onChangeMember, onDataChanged }
               {isCat && tab === '就医记录' && <TabReports reports={visitReports} kind="就医" onOpen={setDetail} />}
               {isCat && tab === '体重趋势' && <TabPetWeight member={member} weights={data.weights} onAdd={() => openCreate('weight')} onDelete={deleteWeight} />}
               {isCat && tab === '附件库' && <TabAttachments reports={attachmentReports} onOpen={setDetail} />}
-              {isCat && tab === '提醒' && <TabReminders items={data.reminders.filter(r => !r.done)} autoBusy={autoBusy} onGenerateAuto={generateAutoReminders} onAdd={() => openCreate('reminder')} onEdit={(item) => editItem('reminder', item)} onDone={completeReminder} onSkip={skipReminder} onDelete={deleteReminder} />}
+              {isCat && tab === '提醒' && <TabReminders items={data.reminders.filter(r => !r.done)} onAdd={() => openCreate('reminder')} onEdit={(item) => editItem('reminder', item)} onDone={completeReminder} onSkip={skipReminder} onDelete={deleteReminder} />}
             </>
           )}
         </div>
@@ -1895,24 +1878,23 @@ const TabAttachments = ({ reports, onOpen }) => (
     <div className="mono" style={{ color: 'var(--ink-soft)', fontSize: 11, margin: '-2px 0 10px' }}>
       医疗报告与附件由 Agent 管线归档入库；前端暂不提供上传解析入口。
     </div>
-    <div className="grid-6">
+    <div className="attachment-grid">
       {reports.map(r => (
-        <div key={r.id} style={{ textAlign: 'center', cursor: 'pointer' }} onClick={() => onOpen && onOpen(r)}>
+        <div key={r.id} className="attachment-card" onClick={() => onOpen && onOpen(r)}>
           <Placeholder label={r.file} h={90} tooltip={reportTooltip(r)} />
-          <div style={{ fontSize: 12, marginTop: 4 }}>{r.t}</div>
-          <div className="mono" style={{ color: 'var(--ink-soft)' }}>{r.d}</div>
+          <div className="attachment-card__title">{r.t}</div>
+          <div className="attachment-card__date mono">{r.d}</div>
         </div>
       ))}
     </div>
   </div>
 );
 
-const TabReminders = ({ items, autoBusy, onGenerateAuto, onAdd, onEdit, onDone, onSkip, onDelete }) => (
+const TabReminders = ({ items, onAdd, onEdit, onDone, onSkip, onDelete }) => (
   <div>
     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
       <DashLabel right={`${items.length} 条`}>我的提醒</DashLabel>
       <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', justifyContent: 'flex-end' }}>
-        {onGenerateAuto && <Btn ghost disabled={autoBusy} onClick={onGenerateAuto}>{autoBusy ? '生成中...' : '自动生成'}</Btn>}
         {onAdd && <Btn primary onClick={onAdd}>+ 新增提醒</Btn>}
       </div>
     </div>
@@ -2206,13 +2188,17 @@ const TabPetCare = ({ reminders, attachments, onAdd, onEdit, onDelete }) => {
       {displayed.length === 0 ? (
         <div style={{ padding: 40, textAlign: 'center', color: 'var(--ink-soft)' }}>暂无记事记录</div>
       ) : (
-        <div className="row-list">
+        <div className="row-list reminders-row-list">
           {displayed.map(r => (
-            <div key={r.id} className="row">
-              <span className="mono">{r.date}</span>
-              <div style={{ fontFamily: 'Caveat, cursive', fontSize: 20, fontWeight: 700 }}>{r.title}</div>
-              <Chip variant="accent-3">{r.kind}</Chip>
-              <div style={{ display: 'flex', gap: 4, justifyContent: 'flex-end' }}>
+            <div key={r.id} className="row reminder-row care-row">
+              <span className="mono reminder-row__date">{r.date}</span>
+              <div className="reminder-row__body">
+                <div className="reminder-row__title">{r.title}</div>
+                <div className="reminder-row__tags">
+                  <Chip variant="accent-3">{r.kind}</Chip>
+                </div>
+              </div>
+              <div className="reminder-row__actions">
                 {onEdit && typeof r.id === 'number' && <Btn ghost onClick={() => onEdit(r)}>编辑</Btn>}
                 {onDelete && typeof r.id === 'number' && <Btn ghost onClick={() => onDelete(r)}>删除</Btn>}
               </div>

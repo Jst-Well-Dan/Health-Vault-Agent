@@ -180,7 +180,7 @@ html, body {
   background: repeating-linear-gradient(135deg,
     var(--paper-2) 0 8px, var(--paper) 8px 16px);
   border: 1.5px dashed var(--line);
-  border-radius: 10px;
+  border-radius: 8px;
   display: flex; align-items: center; justify-content: center;
   font-family: 'JetBrains Mono', monospace;
   font-size: 10.5px;
@@ -188,6 +188,8 @@ html, body {
   text-align: center;
   padding: 6px;
   letter-spacing: 0.06em;
+  overflow: hidden;
+  overflow-wrap: anywhere;
 }
 
 .hover-tip {
@@ -994,6 +996,39 @@ hr.dash { border: none; border-top: 1.5px dashed var(--line); margin: 10px 0; }
 .reminder-row__actions {
   justify-content: flex-end;
   flex-wrap: nowrap;
+}
+.care-row .reminder-row__actions .btn {
+  min-width: 64px;
+}
+
+.attachment-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(158px, 1fr));
+  gap: var(--gap);
+  align-items: start;
+}
+.attachment-card {
+  min-width: 0;
+  text-align: center;
+  cursor: pointer;
+}
+.attachment-card .ph {
+  height: 90px;
+}
+.attachment-card__title {
+  min-height: 36px;
+  margin-top: 6px;
+  font-size: 12px;
+  line-height: 1.35;
+  overflow: hidden;
+  overflow-wrap: anywhere;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+.attachment-card__date {
+  color: var(--ink-soft);
+  margin-top: 2px;
 }
 
 /* Report detail */

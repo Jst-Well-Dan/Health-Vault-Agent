@@ -5,7 +5,7 @@ from fastapi import APIRouter, HTTPException
 from database import get_conn
 from models import ReminderCreate, ReminderUpdate
 from routers.common import bool_out, require_row, row_to_dict, rows_to_dicts
-from services.auto_reminders import skip_auto_reminder, sync_auto_reminders
+from services.auto_reminders import skip_auto_reminder
 
 
 router = APIRouter(tags=["reminders"])
@@ -52,15 +52,6 @@ def create_reminder(payload: ReminderCreate) -> dict:
         )
         row = row_to_dict(conn.execute("SELECT * FROM reminders WHERE id = ?", (cur.lastrowid,)).fetchone())
         return bool_out(row, "done")
-
-
-@router.post("/reminders/auto/sync")
-def sync_generated_reminders(member: Optional[str] = None) -> dict:
-    rows = sync_auto_reminders(member=member)
-    return {
-        "inserted": len(rows),
-        "items": [bool_out(row, "done") for row in rows],
-    }
 
 
 @router.post("/reminders/{reminder_id}/skip")

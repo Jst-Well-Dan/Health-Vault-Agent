@@ -10,6 +10,7 @@ FRONTEND_DIR = BASE_DIR / "frontend"
 PUBLIC_DIR = BASE_DIR / "data" / "public"
 MOCK_DB_PATH = BASE_DIR / "data" / "mock" / "health_mock.db"
 OUT_DIR = BASE_DIR / "docs" / "static-preview"
+STATIC_ASSET_VERSION = "20260421-weight-row"
 
 TABLES = {
     "members": "SELECT * FROM members ORDER BY sort_order, created_at, key",
@@ -68,10 +69,10 @@ def _copy_public_assets(dst: Path) -> None:
 
 def _write_index() -> None:
     html = (FRONTEND_DIR / "index.html").read_text(encoding="utf-8")
-    html = html.replace('<link rel="stylesheet" href="style.css?v=20260420-avatar">', '<link rel="stylesheet" href="style.css">')
-    html = html.replace('src="components/primitives.jsx?v=20260420-avatar"', 'src="components/primitives.jsx"')
-    html = html.replace('src="components/screen_family.jsx?v=20260420-avatar"', 'src="components/screen_family.jsx"')
-    html = html.replace('src="components/screen_member.jsx?v=20260420-avatar"', 'src="components/screen_member.jsx"')
+    html = html.replace('<link rel="stylesheet" href="style.css?v=20260420-avatar">', f'<link rel="stylesheet" href="style.css?v={STATIC_ASSET_VERSION}">')
+    html = html.replace('src="components/primitives.jsx?v=20260420-avatar"', f'src="components/primitives.jsx?v={STATIC_ASSET_VERSION}"')
+    html = html.replace('src="components/screen_family.jsx?v=20260420-avatar"', f'src="components/screen_family.jsx?v={STATIC_ASSET_VERSION}"')
+    html = html.replace('src="components/screen_member.jsx?v=20260420-avatar"', f'src="components/screen_member.jsx?v={STATIC_ASSET_VERSION}"')
     marker = '<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>'
     html = html.replace(marker, marker + '\n<script src="static-api.js"></script>')
     (OUT_DIR / "index.html").write_text(html, encoding="utf-8")

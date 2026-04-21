@@ -2284,12 +2284,12 @@ const TabPetWeight = ({ member, weights, onAdd, onDelete }) => {
           {weights.slice().reverse().map(w => (
             <div
               key={w.id}
-              className="row"
+              className="row pet-weight-row"
               style={String(w.id) === String(selectedWeightId) ? { background: 'color-mix(in oklab, var(--accent) 18%, var(--paper))' } : {}}
             >
               <span className="mono">{w.date}</span>
               <div>{w.notes || '体重记录'}</div>
-              <Chip>{formatWeight(w.weight_kg)} kg</Chip>
+              <Chip style={{ justifySelf: 'end' }}>{formatWeight(w.weight_kg)} kg</Chip>
               <Btn ghost onClick={() => onDelete(w)}>删除</Btn>
             </div>
           ))}

@@ -87,7 +87,7 @@ def _load_existing_visit(member_key: str, visit_date: str) -> dict | None:
         return conn.execute(
             """
             SELECT date, type, hospital, department, doctor, chief_complaint,
-                   severity, diagnosis, notes
+                   severity, diagnosis, notes, note_full
             FROM visits
             WHERE member_key = ? AND date = ?
             ORDER BY id DESC
@@ -106,6 +106,17 @@ def _diagnosis(value: object) -> list[str]:
         except json.JSONDecodeError:
             return [value]
     return []
+
+
+def _default_note_full(item: str) -> str:
+    return (
+        "### 医生诊断\n"
+        "报告未列出明确诊断。\n\n"
+        "### 诊疗意见\n"
+        f"{item}报告已归档，导入前需根据报告结论、异常指标和复查建议补充高信号摘要。\n\n"
+        "### 治疗方案说明\n"
+        "报告中未提供具体用药或治疗方案。"
+    )
 
 
 def _nearest_panel(prefix: str, table: list[list[str]]) -> str:
@@ -365,6 +376,14 @@ def build_payload(path: Path, member_key: str) -> dict:
             "severity": "一般",
             "diagnosis": ["惰性乳杆菌主导"],
             "notes": "总体结果：惰性乳杆菌主导；乳酸菌比例81.78%。",
+            "note_full": (
+                "### 医生诊断\n"
+                "惰性乳杆菌主导。\n\n"
+                "### 诊疗意见\n"
+                "生殖道微生态分子检测总体结果为惰性乳杆菌主导，乳酸菌比例81.78%。\n\n"
+                "### 治疗方案说明\n"
+                "报告中未提供具体用药或治疗方案。"
+            ),
             "source_file": source_file,
         }
     elif existing := _load_existing_visit(member_key, visit_date):
@@ -378,7 +397,8 @@ def build_payload(path: Path, member_key: str) -> dict:
             "chief_complaint": existing["chief_complaint"],
             "severity": existing["severity"],
             "diagnosis": _diagnosis(existing["diagnosis"]),
-            "notes": existing["notes"],
+            "notes": existing["notes"] or f"{item}报告已归档，需根据报告补充关键摘要。",
+            "note_full": existing["note_full"] or _default_note_full(item),
             "source_file": source_file,
         }
     else:
@@ -392,7 +412,8 @@ def build_payload(path: Path, member_key: str) -> dict:
             "chief_complaint": item,
             "severity": "一般",
             "diagnosis": [],
-            "notes": None,
+            "notes": f"{item}报告已归档，需根据报告补充关键摘要。",
+            "note_full": _default_note_full(item),
             "source_file": source_file,
         }
 

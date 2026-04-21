@@ -77,4 +77,4 @@ This project stores personal and family health records in SQLite. Treat the real
 - Use mock mode for experiments: set `HEALTH_MOCK_MODE=1`.
 - Do not delete, rebuild, reset, or bulk-update the real database without explicit user confirmation.
 - After writing, report the inserted IDs and affected row counts.
-- Follow `DB_WRITE_GUIDE.md` for payload shape, date format, attachment paths, and validation rules.
+- Follow `.codex/skills/health-db-writer/references/database-write.md` for payload shape, date format, attachment paths, and validation rules.

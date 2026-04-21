@@ -69,6 +69,7 @@ class VisitCreate(BaseModel):
     severity: Optional[Severity] = None
     diagnosis: list[str] = Field(default_factory=list)
     notes: Optional[str] = None
+    note_full: Optional[str] = None
     source_file: Optional[str] = None
 
 

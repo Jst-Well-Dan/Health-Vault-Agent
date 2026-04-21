@@ -19,9 +19,9 @@ backend/              FastAPI 后端、SQLite 初始化、API 路由、导入脚
 frontend/             React 前端页面和样式
 data/                 真实数据、报告、附件、数据库和公开静态资源
 data/public/          公开静态资源，成员头像放在这里
-data/mock/            模拟模式数据库和附件
+data/mock/            本地生成的模拟模式数据库和附件
 docs/                 项目文档
-DB_WRITE_GUIDE.md     数据库写入和导入规则
+.codex/skills/        Codex 项目技能和数据库写入规则
 ```
 
 ## 快速启动
@@ -81,18 +81,17 @@ data/public/
 示例：
 
 ```text
-member_key = chun    -> data/public/chun.png
-member_key = kaixin  -> data/public/kaixin.png
-member_key = boniu   -> data/public/boniu.png
-member_key = dan     -> data/public/dan.png
+member_key = demo-self   -> data/public/demo-self.png
+member_key = demo-parent -> data/public/demo-parent.png
+member_key = demo-cat    -> data/public/demo-cat.png
 ```
 
 后端在 `GET /api/members` 中扫描 `data/public`，找到文件名与 `member_key` 精确匹配的图片后返回：
 
 ```json
 {
-  "key": "kaixin",
-  "avatar_url": "/public/kaixin.png"
+  "key": "demo-self",
+  "avatar_url": "/public/demo-self.png"
 }
 ```
 
@@ -123,7 +122,37 @@ cd backend
 python scripts\seed_mock_data.py --reset
 ```
 
-更多说明见 [MOCK_DATA.md](MOCK_DATA.md)。
+模拟数据源维护在 `backend/mock_data.py`，`data/mock/` 是本地生成目录，开源仓库不提交。
+
+## GitHub Pages 静态预览
+
+可以把现有模拟数据库导出成纯静态预览页，不需要 FastAPI 后端。若本地还没有模拟数据库，先运行一次 `python backend\scripts\seed_mock_data.py --reset`：
+
+```powershell
+python backend\scripts\export_static_preview.py
+```
+
+脚本会生成：
+
+```text
+docs/static-preview/
+```
+
+该目录包含前端文件、公开头像、模拟附件和 `data/static-data.json`。页面内置只读 API shim，会把 `/api/...` 请求映射到静态 JSON；新增、编辑、删除等写入操作在静态预览中不可用。
+
+本地预览：
+
+```powershell
+python -m http.server 8765 --directory docs\static-preview
+```
+
+然后打开：
+
+```text
+http://127.0.0.1:8765/
+```
+
+部署到 GitHub Pages 时，可选择把 Pages source 指向 `docs/`，访问路径为 `/static-preview/`。
 
 ## 导入就诊数据
 
@@ -134,7 +163,7 @@ python backend\scripts\import_visit_json.py --file path\to\visit.json --dry-run
 python backend\scripts\import_visit_json.py --file path\to\visit.json --write
 ```
 
-真实数据库包含个人和家庭健康记录。写入前请阅读 [DB_WRITE_GUIDE.md](DB_WRITE_GUIDE.md)，并在写入真实数据库前创建备份。
+真实数据库包含个人和家庭健康记录。写入规则统一维护在 `.codex/skills/health-db-writer/`，写入真实数据库前请先 dry-run 并创建备份。
 
 ## 常用 API
 

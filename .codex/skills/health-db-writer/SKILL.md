@@ -55,8 +55,11 @@ Unset mock mode before working with the real database in a new shell if needed.
 - Check that `member_key` exists before importing.
 - Use `YYYY-MM-DD` dates.
 - Keep attachment paths project-relative, usually under `data/reports/...`.
-- Keep `diagnosis` as a list in JSON payloads.
-- Use only `严重`, `一般`, `轻微`, or null for `severity`.
+- Fill `severity`, `diagnosis`, `notes`, and `note_full` from the evidence in the report. These keys must be present in the visit JSON. Do not leave `notes` or `note_full` empty for visit/report imports.
+- Keep `diagnosis` as a list in JSON payloads. Use explicit diagnoses or report conclusions; use `[]` only when the source has no diagnosis or conclusion.
+- Use only `严重`, `一般`, `轻微`, or null for `severity`. Choose the attention level from the source findings; use null only when evidence is insufficient.
+- Keep `notes` to one short sentence with the highest-signal abnormal findings, instructions, or follow-up.
+- Keep `note_full` as a structured Markdown summary with sections such as `### 医生诊断`, `### 诊疗意见`, and `### 治疗方案说明`. State when the source does not provide treatment or medication details instead of inventing them.
 - Attachment titles should be clear and professional.
 
 ## File Management Rules

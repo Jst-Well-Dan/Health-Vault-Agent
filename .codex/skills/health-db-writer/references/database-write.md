@@ -1,6 +1,6 @@
 # Database Write Reference
 
-This reference consolidates database operations, visit writing, and lab result extraction for this project. It is condensed from `DB_WRITE_GUIDE.md` and `docs/guide/`.
+This reference consolidates database operations, visit writing, and lab result extraction for this project.
 
 ## Database Operations
 
@@ -90,8 +90,10 @@ Common rules:
 
 - Use `YYYY-MM-DD` dates.
 - Keep attachment paths project-relative, usually under `data/reports/...`.
-- Keep `diagnosis` as a list in JSON payloads.
-- Use only `严重`, `一般`, `轻微`, or null for `severity`.
+- Fill `severity`, `diagnosis`, `notes`, and `note_full` from the evidence in the source report. These are agent-judged fields and must be present in the visit JSON.
+- Keep `diagnosis` as a list in JSON payloads. Use explicit diagnoses or report conclusions; use `[]` only when no diagnosis or conclusion is available.
+- Use only `严重`, `一般`, `轻微`, or null for `severity`. Choose the attention level from the source findings; use null only when evidence is insufficient.
+- Do not leave `notes` or `note_full` empty for visit/report imports.
 - Do not delete, rebuild, reset, or bulk-update the real database without explicit user confirmation.
 - Always populate `visit.source_file` and `labs[].source_file` with the project-relative Markdown path when a source report exists.
 - Preserve final JSON payloads in `data/imports/<member_key>/` for traceability and future audits.
@@ -121,7 +123,7 @@ Related data belongs elsewhere:
 - Lab indicators: `lab_results`
 - Medication or treatment drugs: `meds`
 - Source documents: `attachments`
-- Summary only: `visits.notes`
+- Summary only: `visits.notes`; structured detail summary: `visits.note_full`
 
 Visit field rules:
 
@@ -135,6 +137,7 @@ Visit field rules:
 - `severity`: only `严重`, `轻微`, `一般`, or null.
 - `diagnosis`: list of explicit diagnoses or report conclusions. Use `[]` if none.
 - `notes`: one sentence summary of key instructions, abnormal findings, or follow-up.
+- `note_full`: structured Markdown summary of the source report, usually with `### 医生诊断`, `### 诊疗意见`, and `### 治疗方案说明`.
 - `source_file`: source Markdown or PDF path/name for traceability.
 
 Chief complaint priority:
@@ -152,6 +155,13 @@ Severity is the attention level of this event, not a permanent disease grade. Do
 - null: evidence is insufficient.
 
 Keep `notes` short. Include high-signal facts such as `FeNO 185.4 ppb`, `SAA 169.44 mg/L`, `建议规律用药并复查`, or `必要时核磁检查`. Do not paste full report text or list every lab indicator in `notes`.
+
+Use `note_full` when the frontend needs a richer report detail. Keep it concise and evidence-based:
+
+- `### 医生诊断`: diagnoses, report conclusions, or `报告未列出明确诊断。`
+- `### 诊疗意见`: main abnormal findings, interpretation stated by the report, follow-up advice, or observation points.
+- `### 治疗方案说明`: medications, procedures, treatment advice, or `报告中未提供具体用药或治疗方案。`
+- Do not invent treatment, severity, or disease conclusions beyond the source. If only screening findings exist, describe them as screening findings.
 
 ## Lab Results
 

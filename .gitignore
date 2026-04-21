@@ -17,6 +17,7 @@ data/*.db-wal
 data/**/*.db
 data/**/*.db-shm
 data/**/*.db-wal
+data/backups/
 data/log/
 
 # Frontend
@@ -29,6 +30,26 @@ dist/
 .DS_Store
 
 # Docs
-docs
+docs/*
+!docs/static-preview/
+!docs/static-preview/**
 todo.md
 data_incoming/
+
+# 个人健康数据（开源时不提交）
+data/reports/
+data/imports/
+!data/imports/
+data/imports/*
+!data/imports/templates/
+!data/imports/templates/visit_import.example.json
+data/mock/
+data/public/*
+!data/public/README.md
+!data/public/demo-*.png
+!data/public/demo-*.jpg
+!data/public/demo-*.jpeg
+!data/public/demo-*.webp
+报告pdf/
+报告md/
+文案.md

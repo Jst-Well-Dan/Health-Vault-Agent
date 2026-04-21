@@ -42,8 +42,8 @@ def _insert_payload(conn: sqlite3.Connection, payload: dict) -> int:
         """
         INSERT INTO visits
           (member_key, date, type, hospital, department, doctor, chief_complaint,
-           severity, diagnosis, notes, source_file)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+           severity, diagnosis, notes, note_full, source_file)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         """,
         (
             visit["member_key"],
@@ -56,6 +56,7 @@ def _insert_payload(conn: sqlite3.Connection, payload: dict) -> int:
             _severity(visit.get("severity")),
             _json_list(visit.get("diagnosis")),
             visit.get("notes"),
+            visit.get("note_full"),
             visit.get("source_file"),
         ),
     )

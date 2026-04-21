@@ -163,6 +163,7 @@ def init_db() -> None:
               severity        TEXT CHECK (severity IS NULL OR severity IN ('严重', '轻微', '一般')),
               diagnosis       TEXT DEFAULT '[]',
               notes           TEXT,
+              note_full       TEXT,
               source_file     TEXT,
               created_at      TEXT DEFAULT (datetime('now','localtime'))
             );
@@ -256,6 +257,8 @@ def init_db() -> None:
             conn.execute("ALTER TABLE visits ADD COLUMN type TEXT")
         if "severity" not in visit_cols:
             conn.execute("ALTER TABLE visits ADD COLUMN severity TEXT")
+        if "note_full" not in visit_cols:
+            conn.execute("ALTER TABLE visits ADD COLUMN note_full TEXT")
         conn.execute(
             """
             UPDATE visits

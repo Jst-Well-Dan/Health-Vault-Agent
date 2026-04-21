@@ -55,14 +55,21 @@ def _validate_payload_shape(payload: dict) -> None:
     if visit.get("type") is not None:
         _require_string(visit.get("type"), "visit.type")
 
+    if "severity" not in visit:
+        raise ValueError("visit.severity must be present; use null only when evidence is insufficient")
     severity = visit.get("severity")
     if severity is not None and severity not in SEVERITY_VALUES:
         allowed = ", ".join(sorted(SEVERITY_VALUES))
         raise ValueError(f"visit.severity must be one of: {allowed}")
 
+    if "diagnosis" not in visit:
+        raise ValueError("visit.diagnosis must be present; use [] only when the source has no diagnosis or conclusion")
     diagnosis = visit.get("diagnosis", [])
     if not isinstance(diagnosis, list) or any(not isinstance(item, str) for item in diagnosis):
         raise ValueError("visit.diagnosis must be a list of strings")
+
+    _require_string(visit.get("notes"), "visit.notes")
+    _require_string(visit.get("note_full"), "visit.note_full")
 
     for index, lab in enumerate(_validate_optional_list(payload.get("labs", []), "labs")):
         if not isinstance(lab, dict):

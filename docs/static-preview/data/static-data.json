@@ -2,14 +2,15 @@
   "members": [
     {
       "key": "demo-self",
-      "name": "我",
-      "full_name": "我",
+      "name": "张三",
+      "full_name": "张三",
       "initial": "张",
       "birth_date": "1992-06-18",
       "sex": "女",
       "blood_type": "O",
       "role": "本人",
       "species": "human",
+      "sort_order": 10,
       "breed": null,
       "home_date": null,
       "chip_id": null,
@@ -21,21 +22,21 @@
         "过敏性鼻炎"
       ],
       "notes": "模拟成员，用于公开演示；所有记录均为虚构。",
-      "created_at": "2026-04-20 13:00:35",
-      "updated_at": "2026-04-20 13:00:35",
-      "sort_order": 10,
+      "created_at": "2026-04-21 15:54:37",
+      "updated_at": "2026-04-21 15:54:37",
       "avatar_url": "public/demo-self.png"
     },
     {
       "key": "demo-parent",
-      "name": "父亲",
-      "full_name": "父亲",
+      "name": "张三爸",
+      "full_name": "张三爸",
       "initial": "爸",
       "birth_date": "1963-11-03",
       "sex": "男",
       "blood_type": "A",
       "role": "父亲",
       "species": "human",
+      "sort_order": 20,
       "breed": null,
       "home_date": null,
       "chip_id": null,
@@ -46,9 +47,8 @@
         "血脂偏高"
       ],
       "notes": "模拟慢病随访档案，用于展示用药、提醒和检验趋势。",
-      "created_at": "2026-04-20 13:00:35",
-      "updated_at": "2026-04-20 13:00:35",
-      "sort_order": 20,
+      "created_at": "2026-04-21 15:54:37",
+      "updated_at": "2026-04-21 15:54:37",
       "avatar_url": "public/demo-parent.png"
     },
     {
@@ -61,6 +61,7 @@
       "blood_type": null,
       "role": "猫咪",
       "species": "cat",
+      "sort_order": 30,
       "breed": "英国短毛猫",
       "home_date": "2021-07-20",
       "chip_id": "156100000000001",
@@ -70,9 +71,8 @@
         "牙结石轻度"
       ],
       "notes": "模拟宠物档案，用于展示体重曲线、疫苗和记事。",
-      "created_at": "2026-04-20 13:00:35",
-      "updated_at": "2026-04-20 13:00:35",
-      "sort_order": 30,
+      "created_at": "2026-04-21 15:54:37",
+      "updated_at": "2026-04-21 15:54:37",
       "avatar_url": "public/demo-cat.png"
     }
   ],
@@ -81,6 +81,7 @@
       "id": 101,
       "member_key": "demo-self",
       "date": "2026-03-18",
+      "type": "体检",
       "hospital": "三甲A 体检中心",
       "department": "体检科",
       "doctor": "周医生",
@@ -91,15 +92,15 @@
         "维生素D不足"
       ],
       "notes": "建议低脂饮食、增加有氧运动，3个月后复查血脂。",
+      "note_full": null,
       "source_file": "mock_demo_self_checkup.md",
-      "created_at": "2026-04-20 13:00:35",
-      "type": "体检",
-      "note_full": null
+      "created_at": "2026-04-21 15:54:37"
     },
     {
       "id": 201,
       "member_key": "demo-parent",
       "date": "2026-03-15",
+      "type": "就医",
       "hospital": "社区卫生服务中心",
       "department": "慢病门诊",
       "doctor": "赵医生",
@@ -110,15 +111,15 @@
         "血脂偏高"
       ],
       "notes": "家庭血压多数在130/80 mmHg左右，维持现有方案。",
+      "note_full": null,
       "source_file": "mock_demo_parent_bp.md",
-      "created_at": "2026-04-20 13:00:35",
-      "type": "复查",
-      "note_full": null
+      "created_at": "2026-04-21 15:54:37"
     },
     {
       "id": 102,
       "member_key": "demo-self",
       "date": "2026-01-09",
+      "type": "就医",
       "hospital": "社区卫生服务中心",
       "department": "全科",
       "doctor": "李医生",
@@ -128,15 +129,15 @@
         "过敏性鼻炎"
       ],
       "notes": "花粉季前继续鼻喷激素，必要时加用抗组胺药。",
+      "note_full": null,
       "source_file": "mock_demo_self_rhinitis.md",
-      "created_at": "2026-04-20 13:00:35",
-      "type": "复查",
-      "note_full": null
+      "created_at": "2026-04-21 15:54:37"
     },
     {
       "id": 301,
       "member_key": "demo-cat",
       "date": "2025-12-14",
+      "type": "体检",
       "hospital": "城市动物医院",
       "department": "内科",
       "doctor": "陈兽医",
@@ -147,34 +148,15 @@
         "牙结石轻度"
       ],
       "notes": "建议继续控制体重，半年内安排洁牙评估。",
+      "note_full": null,
       "source_file": "mock_demo_cat_checkup.md",
-      "created_at": "2026-04-20 13:00:35",
-      "type": "体检",
-      "note_full": null
-    },
-    {
-      "id": 202,
-      "member_key": "demo-parent",
-      "date": "2025-10-10",
-      "hospital": "三甲B 综合医院",
-      "department": null,
-      "doctor": null,
-      "chief_complaint": "年度体检",
-      "severity": "严重",
-      "diagnosis": [
-        "原发性高血压",
-        "轻度白内障"
-      ],
-      "notes": null,
-      "source_file": null,
-      "created_at": "2025-10-10 10:00:00",
-      "type": "体检",
-      "note_full": "收缩压 145，舒张压 95。ALT 45 略高。建议内科复诊，开始生活方式干预。"
+      "created_at": "2026-04-21 15:54:37"
     },
     {
       "id": 302,
       "member_key": "demo-cat",
       "date": "2025-09-20",
+      "type": "疫苗",
       "hospital": "城市动物医院",
       "department": "预防保健",
       "doctor": "陈兽医",
@@ -184,53 +166,14 @@
         "完成猫三联加强免疫"
       ],
       "notes": "接种后观察30分钟无异常。",
+      "note_full": null,
       "source_file": "mock_demo_cat_vaccine.md",
-      "created_at": "2026-04-20 13:00:35",
-      "type": "就医",
-      "note_full": null
-    },
-    {
-      "id": 103,
-      "member_key": "demo-self",
-      "date": "2025-03-20",
-      "hospital": "三甲A 体检中心",
-      "department": null,
-      "doctor": null,
-      "chief_complaint": "年度体检",
-      "severity": "一般",
-      "diagnosis": [
-        "高胆固醇血症",
-        "维生素D缺乏"
-      ],
-      "notes": null,
-      "source_file": null,
-      "created_at": "2025-03-20 09:00:00",
-      "type": "体检",
-      "note_full": "LDL-C 3.5 偏高，维生素D 15 缺乏。建议加强运动，补充维D，清淡饮食。"
-    },
-    {
-      "id": 303,
-      "member_key": "demo-cat",
-      "date": "2024-11-28",
-      "hospital": "城市动物医院",
-      "department": null,
-      "doctor": null,
-      "chief_complaint": "年度体检",
-      "severity": "一般",
-      "diagnosis": [
-        "轻度牙结石",
-        "体重超标"
-      ],
-      "notes": null,
-      "source_file": null,
-      "created_at": "2024-11-28 14:00:00",
-      "type": "体检",
-      "note_full": "全体状况尚可。牙结石轻度，建议增加刷牙频率。体重偏胖，需控制饮食量。"
+      "created_at": "2026-04-21 15:54:37"
     }
   ],
   "labs": [
     {
-      "id": 23,
+      "id": 5,
       "member_key": "demo-self",
       "visit_id": 101,
       "date": "2026-03-18",
@@ -242,10 +185,10 @@
       "ref_high": null,
       "status": "low",
       "source_file": null,
-      "created_at": "2026-04-20 13:00:35"
+      "created_at": "2026-04-21 15:54:37"
     },
     {
-      "id": 22,
+      "id": 4,
       "member_key": "demo-self",
       "visit_id": 101,
       "date": "2026-03-18",
@@ -257,10 +200,10 @@
       "ref_high": "10",
       "status": "normal",
       "source_file": null,
-      "created_at": "2026-04-20 13:00:35"
+      "created_at": "2026-04-21 15:54:37"
     },
     {
-      "id": 21,
+      "id": 3,
       "member_key": "demo-self",
       "visit_id": 101,
       "date": "2026-03-18",
@@ -272,10 +215,10 @@
       "ref_high": "5.2",
       "status": "high",
       "source_file": null,
-      "created_at": "2026-04-20 13:00:35"
+      "created_at": "2026-04-21 15:54:37"
     },
     {
-      "id": 20,
+      "id": 2,
       "member_key": "demo-self",
       "visit_id": 101,
       "date": "2026-03-18",
@@ -287,10 +230,10 @@
       "ref_high": null,
       "status": "normal",
       "source_file": null,
-      "created_at": "2026-04-20 13:00:35"
+      "created_at": "2026-04-21 15:54:37"
     },
     {
-      "id": 19,
+      "id": 1,
       "member_key": "demo-self",
       "visit_id": 101,
       "date": "2026-03-18",
@@ -302,10 +245,10 @@
       "ref_high": "3.4",
       "status": "high",
       "source_file": null,
-      "created_at": "2026-04-20 13:00:35"
+      "created_at": "2026-04-21 15:54:37"
     },
     {
-      "id": 29,
+      "id": 11,
       "member_key": "demo-parent",
       "visit_id": 201,
       "date": "2026-03-15",
@@ -317,10 +260,10 @@
       "ref_high": "2.6",
       "status": "high",
       "source_file": null,
-      "created_at": "2026-04-20 13:00:35"
+      "created_at": "2026-04-21 15:54:37"
     },
     {
-      "id": 28,
+      "id": 10,
       "member_key": "demo-parent",
       "visit_id": 201,
       "date": "2026-03-15",
@@ -332,10 +275,10 @@
       "ref_high": "90",
       "status": "normal",
       "source_file": null,
-      "created_at": "2026-04-20 13:00:35"
+      "created_at": "2026-04-21 15:54:37"
     },
     {
-      "id": 27,
+      "id": 9,
       "member_key": "demo-parent",
       "visit_id": 201,
       "date": "2026-03-15",
@@ -347,10 +290,10 @@
       "ref_high": "140",
       "status": "normal",
       "source_file": null,
-      "created_at": "2026-04-20 13:00:35"
+      "created_at": "2026-04-21 15:54:37"
     },
     {
-      "id": 34,
+      "id": 16,
       "member_key": "demo-cat",
       "visit_id": 301,
       "date": "2025-12-14",
@@ -362,10 +305,10 @@
       "ref_high": "100",
       "status": "normal",
       "source_file": null,
-      "created_at": "2026-04-20 13:00:35"
+      "created_at": "2026-04-21 15:54:37"
     },
     {
-      "id": 33,
+      "id": 15,
       "member_key": "demo-cat",
       "visit_id": 301,
       "date": "2025-12-14",
@@ -377,10 +320,10 @@
       "ref_high": "159",
       "status": "normal",
       "source_file": null,
-      "created_at": "2026-04-20 13:00:35"
+      "created_at": "2026-04-21 15:54:37"
     },
     {
-      "id": 32,
+      "id": 14,
       "member_key": "demo-cat",
       "visit_id": 301,
       "date": "2025-12-14",
@@ -392,10 +335,10 @@
       "ref_high": "19.5",
       "status": "normal",
       "source_file": null,
-      "created_at": "2026-04-20 13:00:35"
+      "created_at": "2026-04-21 15:54:37"
     },
     {
-      "id": 30,
+      "id": 12,
       "member_key": "demo-parent",
       "visit_id": null,
       "date": "2025-12-05",
@@ -407,55 +350,10 @@
       "ref_high": "2.6",
       "status": "high",
       "source_file": null,
-      "created_at": "2026-04-20 13:00:35"
+      "created_at": "2026-04-21 15:54:37"
     },
     {
-      "id": 42,
-      "member_key": "demo-parent",
-      "visit_id": 202,
-      "date": "2025-10-10",
-      "panel": "肝功能",
-      "test_name": "ALT",
-      "value": "45",
-      "unit": "U/L",
-      "ref_low": "0",
-      "ref_high": "40",
-      "status": "high",
-      "source_file": null,
-      "created_at": "2026-04-20 16:51:02"
-    },
-    {
-      "id": 41,
-      "member_key": "demo-parent",
-      "visit_id": 202,
-      "date": "2025-10-10",
-      "panel": "血压记录",
-      "test_name": "舒张压",
-      "value": "95",
-      "unit": "mmHg",
-      "ref_low": "60",
-      "ref_high": "90",
-      "status": "high",
-      "source_file": null,
-      "created_at": "2026-04-20 16:51:02"
-    },
-    {
-      "id": 40,
-      "member_key": "demo-parent",
-      "visit_id": 202,
-      "date": "2025-10-10",
-      "panel": "血压记录",
-      "test_name": "收缩压",
-      "value": "145",
-      "unit": "mmHg",
-      "ref_low": "90",
-      "ref_high": "140",
-      "status": "high",
-      "source_file": null,
-      "created_at": "2026-04-20 16:51:02"
-    },
-    {
-      "id": 24,
+      "id": 6,
       "member_key": "demo-self",
       "visit_id": null,
       "date": "2025-10-10",
@@ -467,10 +365,10 @@
       "ref_high": "3.4",
       "status": "high",
       "source_file": null,
-      "created_at": "2026-04-20 13:00:35"
+      "created_at": "2026-04-21 15:54:37"
     },
     {
-      "id": 36,
+      "id": 18,
       "member_key": "demo-cat",
       "visit_id": 302,
       "date": "2025-09-20",
@@ -482,10 +380,10 @@
       "ref_high": null,
       "status": "normal",
       "source_file": null,
-      "created_at": "2026-04-20 13:00:35"
+      "created_at": "2026-04-21 15:54:37"
     },
     {
-      "id": 35,
+      "id": 17,
       "member_key": "demo-cat",
       "visit_id": 302,
       "date": "2025-09-20",
@@ -497,10 +395,10 @@
       "ref_high": null,
       "status": "normal",
       "source_file": null,
-      "created_at": "2026-04-20 13:00:35"
+      "created_at": "2026-04-21 15:54:37"
     },
     {
-      "id": 31,
+      "id": 13,
       "member_key": "demo-parent",
       "visit_id": null,
       "date": "2025-08-02",
@@ -512,10 +410,10 @@
       "ref_high": "2.6",
       "status": "high",
       "source_file": null,
-      "created_at": "2026-04-20 13:00:35"
+      "created_at": "2026-04-21 15:54:37"
     },
     {
-      "id": 26,
+      "id": 8,
       "member_key": "demo-self",
       "visit_id": null,
       "date": "2025-05-08",
@@ -527,10 +425,10 @@
       "ref_high": null,
       "status": "low",
       "source_file": null,
-      "created_at": "2026-04-20 13:00:35"
+      "created_at": "2026-04-21 15:54:37"
     },
     {
-      "id": 25,
+      "id": 7,
       "member_key": "demo-self",
       "visit_id": null,
       "date": "2025-05-08",
@@ -542,87 +440,12 @@
       "ref_high": "3.4",
       "status": "normal",
       "source_file": null,
-      "created_at": "2026-04-20 13:00:35"
-    },
-    {
-      "id": 39,
-      "member_key": "demo-self",
-      "visit_id": 103,
-      "date": "2025-03-20",
-      "panel": "营养",
-      "test_name": "25-OH维生素D",
-      "value": "15",
-      "unit": "ng/mL",
-      "ref_low": "30",
-      "ref_high": "100",
-      "status": "low",
-      "source_file": null,
-      "created_at": "2026-04-20 16:51:02"
-    },
-    {
-      "id": 38,
-      "member_key": "demo-self",
-      "visit_id": 103,
-      "date": "2025-03-20",
-      "panel": "血脂四项",
-      "test_name": "TC",
-      "value": "5.2",
-      "unit": "mmol/L",
-      "ref_low": "3.1",
-      "ref_high": "5.2",
-      "status": "normal",
-      "source_file": null,
-      "created_at": "2026-04-20 16:51:02"
-    },
-    {
-      "id": 37,
-      "member_key": "demo-self",
-      "visit_id": 103,
-      "date": "2025-03-20",
-      "panel": "血脂四项",
-      "test_name": "LDL-C",
-      "value": "3.5",
-      "unit": "mmol/L",
-      "ref_low": "0",
-      "ref_high": "3.4",
-      "status": "high",
-      "source_file": null,
-      "created_at": "2026-04-20 16:51:02"
-    },
-    {
-      "id": 44,
-      "member_key": "demo-cat",
-      "visit_id": 303,
-      "date": "2024-11-28",
-      "panel": "生化",
-      "test_name": "BUN",
-      "value": "9.2",
-      "unit": "mmol/L",
-      "ref_low": "7",
-      "ref_high": "28",
-      "status": "normal",
-      "source_file": null,
-      "created_at": "2026-04-20 16:51:02"
-    },
-    {
-      "id": 43,
-      "member_key": "demo-cat",
-      "visit_id": 303,
-      "date": "2024-11-28",
-      "panel": "生化",
-      "test_name": "CREA",
-      "value": "95",
-      "unit": "μmol/L",
-      "ref_low": "44",
-      "ref_high": "159",
-      "status": "normal",
-      "source_file": null,
-      "created_at": "2026-04-20 16:51:02"
+      "created_at": "2026-04-21 15:54:37"
     }
   ],
   "meds": [
     {
-      "id": 7,
+      "id": 2,
       "member_key": "demo-self",
       "visit_id": null,
       "name": "维生素D3",
@@ -633,12 +456,12 @@
       "end_date": "2026-06-20",
       "ongoing": true,
       "notes": "随餐。",
-      "created_at": "2026-04-20 13:00:35",
-      "updated_at": "2026-04-20 13:00:35",
+      "created_at": "2026-04-21 15:54:37",
+      "updated_at": "2026-04-21 15:54:37",
       "category": "补充剂"
     },
     {
-      "id": 9,
+      "id": 4,
       "member_key": "demo-parent",
       "visit_id": 201,
       "name": "瑞舒伐他汀",
@@ -649,12 +472,12 @@
       "end_date": null,
       "ongoing": true,
       "notes": "3个月后复查肝功能和血脂。",
-      "created_at": "2026-04-20 13:00:35",
-      "updated_at": "2026-04-20 13:00:35",
+      "created_at": "2026-04-21 15:54:37",
+      "updated_at": "2026-04-21 15:54:37",
       "category": "调脂"
     },
     {
-      "id": 6,
+      "id": 1,
       "member_key": "demo-self",
       "visit_id": 102,
       "name": "糠酸莫米松鼻喷剂",
@@ -665,12 +488,12 @@
       "end_date": null,
       "ongoing": true,
       "notes": "花粉季维持。",
-      "created_at": "2026-04-20 13:00:35",
-      "updated_at": "2026-04-20 13:00:35",
+      "created_at": "2026-04-21 15:54:37",
+      "updated_at": "2026-04-21 15:54:37",
       "category": "过敏"
     },
     {
-      "id": 10,
+      "id": 5,
       "member_key": "demo-cat",
       "visit_id": 301,
       "name": "化毛膏",
@@ -681,12 +504,12 @@
       "end_date": null,
       "ongoing": true,
       "notes": "换毛季可增加频次。",
-      "created_at": "2026-04-20 13:00:35",
-      "updated_at": "2026-04-20 13:00:35",
+      "created_at": "2026-04-21 15:54:37",
+      "updated_at": "2026-04-21 15:54:37",
       "category": "日常护理"
     },
     {
-      "id": 8,
+      "id": 3,
       "member_key": "demo-parent",
       "visit_id": 201,
       "name": "氨氯地平",
@@ -697,112 +520,112 @@
       "end_date": null,
       "ongoing": true,
       "notes": "早晨固定时间服用。",
-      "created_at": "2026-04-20 13:00:35",
-      "updated_at": "2026-04-20 13:00:35",
+      "created_at": "2026-04-21 15:54:37",
+      "updated_at": "2026-04-21 15:54:37",
       "category": "降压"
     }
   ],
   "weights": [
     {
-      "id": 20,
+      "id": 8,
       "member_key": "demo-cat",
       "date": "2025-07-01",
       "weight_kg": 4.05,
       "notes": "夏季体重",
-      "created_at": "2026-04-20 13:00:35"
+      "created_at": "2026-04-21 15:54:37"
     },
     {
-      "id": 21,
+      "id": 9,
       "member_key": "demo-cat",
       "date": "2025-09-01",
       "weight_kg": 4.12,
       "notes": "疫苗前",
-      "created_at": "2026-04-20 13:00:35"
+      "created_at": "2026-04-21 15:54:37"
     },
     {
-      "id": 13,
+      "id": 1,
       "member_key": "demo-self",
       "date": "2025-10-01",
       "weight_kg": 56.8,
       "notes": "晨起空腹",
-      "created_at": "2026-04-20 13:00:35"
+      "created_at": "2026-04-21 15:54:37"
     },
     {
-      "id": 17,
+      "id": 5,
       "member_key": "demo-parent",
       "date": "2025-10-01",
       "weight_kg": 73.5,
       "notes": "家庭记录",
-      "created_at": "2026-04-20 13:00:35"
+      "created_at": "2026-04-21 15:54:37"
     },
     {
-      "id": 14,
+      "id": 2,
       "member_key": "demo-self",
       "date": "2025-12-01",
       "weight_kg": 56.2,
       "notes": "晨起空腹",
-      "created_at": "2026-04-20 13:00:35"
+      "created_at": "2026-04-21 15:54:37"
     },
     {
-      "id": 22,
+      "id": 10,
       "member_key": "demo-cat",
       "date": "2025-12-14",
       "weight_kg": 4.18,
       "notes": "年度体检",
-      "created_at": "2026-04-20 13:00:35"
+      "created_at": "2026-04-21 15:54:37"
     },
     {
-      "id": 18,
+      "id": 6,
       "member_key": "demo-parent",
       "date": "2026-01-01",
       "weight_kg": 72.8,
       "notes": "家庭记录",
-      "created_at": "2026-04-20 13:00:35"
+      "created_at": "2026-04-21 15:54:37"
     },
     {
-      "id": 15,
+      "id": 3,
       "member_key": "demo-self",
       "date": "2026-02-01",
       "weight_kg": 55.9,
       "notes": "晨起空腹",
-      "created_at": "2026-04-20 13:00:35"
+      "created_at": "2026-04-21 15:54:37"
     },
     {
-      "id": 23,
+      "id": 11,
       "member_key": "demo-cat",
       "date": "2026-02-15",
       "weight_kg": 4.15,
       "notes": "家庭称重",
-      "created_at": "2026-04-20 13:00:35"
+      "created_at": "2026-04-21 15:54:37"
     },
     {
-      "id": 16,
+      "id": 4,
       "member_key": "demo-self",
       "date": "2026-04-01",
       "weight_kg": 55.6,
       "notes": "晨起空腹",
-      "created_at": "2026-04-20 13:00:35"
+      "created_at": "2026-04-21 15:54:37"
     },
     {
-      "id": 19,
+      "id": 7,
       "member_key": "demo-parent",
       "date": "2026-04-01",
       "weight_kg": 72.1,
       "notes": "家庭记录",
-      "created_at": "2026-04-20 13:00:35"
+      "created_at": "2026-04-21 15:54:37"
     },
     {
-      "id": 24,
+      "id": 12,
       "member_key": "demo-cat",
       "date": "2026-04-01",
       "weight_kg": 4.1,
       "notes": "家庭称重",
-      "created_at": "2026-04-20 13:00:35"
+      "created_at": "2026-04-21 15:54:37"
     }
   ],
   "reminders": [
     {
-      "id": 14,
+      "id": 9,
       "member_key": "demo-cat",
       "date": "2026-03-28",
       "title": "剪指甲",
@@ -814,10 +637,10 @@
       "source": "manual",
       "rule_key": null,
       "auto_key": null,
-      "created_at": "2026-04-20 13:00:35"
+      "created_at": "2026-04-21 15:54:37"
     },
     {
-      "id": 9,
+      "id": 2,
       "member_key": "demo-self",
       "date": "2026-04-05",
       "title": "记录花粉季鼻炎症状",
@@ -829,10 +652,40 @@
       "source": "manual",
       "rule_key": null,
       "auto_key": null,
-      "created_at": "2026-04-20 13:00:35"
+      "created_at": "2026-04-21 15:54:37"
     },
     {
-      "id": 12,
+      "id": 8,
+      "member_key": "demo-cat",
+      "date": "2026-04-18",
+      "title": "洗澡",
+      "kind": "洗澡",
+      "priority": "normal",
+      "done": true,
+      "done_at": "2026-04-18 19:30:00",
+      "notes": "洗澡后状态正常。",
+      "source": "manual",
+      "rule_key": null,
+      "auto_key": null,
+      "created_at": "2026-04-21 15:54:37"
+    },
+    {
+      "id": 7,
+      "member_key": "demo-cat",
+      "date": "2026-04-20",
+      "title": "体外驱虫",
+      "kind": "驱虫",
+      "priority": "normal",
+      "done": true,
+      "done_at": "2026-04-20 20:00:00",
+      "notes": "完成本月体外驱虫。",
+      "source": "manual",
+      "rule_key": null,
+      "auto_key": null,
+      "created_at": "2026-04-21 15:54:37"
+    },
+    {
+      "id": 5,
       "member_key": "demo-cat",
       "date": "2026-04-25",
       "title": "体外驱虫",
@@ -844,10 +697,10 @@
       "source": "manual",
       "rule_key": null,
       "auto_key": null,
-      "created_at": "2026-04-20 13:00:35"
+      "created_at": "2026-04-21 15:54:37"
     },
     {
-      "id": 10,
+      "id": 3,
       "member_key": "demo-parent",
       "date": "2026-05-15",
       "title": "慢病门诊随访",
@@ -859,10 +712,10 @@
       "source": "manual",
       "rule_key": null,
       "auto_key": null,
-      "created_at": "2026-04-20 13:00:35"
+      "created_at": "2026-04-21 15:54:37"
     },
     {
-      "id": 8,
+      "id": 1,
       "member_key": "demo-self",
       "date": "2026-05-18",
       "title": "复查血脂和维生素D",
@@ -874,10 +727,10 @@
       "source": "manual",
       "rule_key": null,
       "auto_key": null,
-      "created_at": "2026-04-20 13:00:35"
+      "created_at": "2026-04-21 15:54:37"
     },
     {
-      "id": 13,
+      "id": 6,
       "member_key": "demo-cat",
       "date": "2026-06-14",
       "title": "洁牙评估",
@@ -889,10 +742,10 @@
       "source": "manual",
       "rule_key": null,
       "auto_key": null,
-      "created_at": "2026-04-20 13:00:35"
+      "created_at": "2026-04-21 15:54:37"
     },
     {
-      "id": 11,
+      "id": 4,
       "member_key": "demo-parent",
       "date": "2026-06-15",
       "title": "复查肝功能和血脂",
@@ -904,12 +757,12 @@
       "source": "manual",
       "rule_key": null,
       "auto_key": null,
-      "created_at": "2026-04-20 13:00:35"
+      "created_at": "2026-04-21 15:54:37"
     }
   ],
   "attachments": [
     {
-      "id": 6,
+      "id": 1,
       "member_key": "demo-self",
       "visit_id": 101,
       "date": "2026-03-18",
@@ -919,11 +772,11 @@
       "filename": "mock_demo_self_checkup.md",
       "file_path": "data\\mock\\attachments\\mock_demo_self_checkup.md",
       "notes": "模拟体检报告摘要。",
-      "created_at": "2026-04-20 13:00:35",
-      "static_url": "attachments/6-mock_demo_self_checkup.md"
+      "created_at": "2026-04-21 15:54:37",
+      "static_url": "attachments/1-mock_demo_self_checkup.md"
     },
     {
-      "id": 8,
+      "id": 3,
       "member_key": "demo-parent",
       "visit_id": 201,
       "date": "2026-03-15",
@@ -933,11 +786,11 @@
       "filename": "mock_demo_parent_bp.md",
       "file_path": "data\\mock\\attachments\\mock_demo_parent_bp.md",
       "notes": "模拟慢病随访。",
-      "created_at": "2026-04-20 13:00:35",
-      "static_url": "attachments/8-mock_demo_parent_bp.md"
+      "created_at": "2026-04-21 15:54:37",
+      "static_url": "attachments/3-mock_demo_parent_bp.md"
     },
     {
-      "id": 7,
+      "id": 2,
       "member_key": "demo-self",
       "visit_id": 102,
       "date": "2026-01-09",
@@ -947,11 +800,11 @@
       "filename": "mock_demo_self_rhinitis.md",
       "file_path": "data\\mock\\attachments\\mock_demo_self_rhinitis.md",
       "notes": "模拟门诊记录。",
-      "created_at": "2026-04-20 13:00:35",
-      "static_url": "attachments/7-mock_demo_self_rhinitis.md"
+      "created_at": "2026-04-21 15:54:37",
+      "static_url": "attachments/2-mock_demo_self_rhinitis.md"
     },
     {
-      "id": 9,
+      "id": 4,
       "member_key": "demo-cat",
       "visit_id": 301,
       "date": "2025-12-14",
@@ -961,11 +814,11 @@
       "filename": "mock_demo_cat_checkup.md",
       "file_path": "data\\mock\\attachments\\mock_demo_cat_checkup.md",
       "notes": "模拟宠物体检。",
-      "created_at": "2026-04-20 13:00:35",
-      "static_url": "attachments/9-mock_demo_cat_checkup.md"
+      "created_at": "2026-04-21 15:54:37",
+      "static_url": "attachments/4-mock_demo_cat_checkup.md"
     },
     {
-      "id": 10,
+      "id": 5,
       "member_key": "demo-cat",
       "visit_id": 302,
       "date": "2025-09-20",
@@ -975,15 +828,15 @@
       "filename": "mock_demo_cat_vaccine.md",
       "file_path": "data\\mock\\attachments\\mock_demo_cat_vaccine.md",
       "notes": "模拟疫苗记录。",
-      "created_at": "2026-04-20 13:00:35",
-      "static_url": "attachments/10-mock_demo_cat_vaccine.md"
+      "created_at": "2026-04-21 15:54:37",
+      "static_url": "attachments/5-mock_demo_cat_vaccine.md"
     }
   ],
   "attachment_text": {
-    "6": "# 年度体检报告\n\n模拟数据。LDL-C 3.8 mmol/L，TC 5.4 mmol/L，25-OH维生素D 18 ng/mL。\n\n建议：低脂饮食、规律运动，3个月后复查。\n",
-    "8": "# 高血压随访记录\n\n模拟数据。诊室血压132/84 mmHg，家庭记录稳定。维持氨氯地平，新增低剂量他汀。\n",
-    "7": "# 鼻炎复诊记录\n\n模拟数据。主诉为花粉季鼻塞、喷嚏。继续鼻喷激素，必要时口服抗组胺药。\n",
-    "9": "# 猫咪年度体检\n\n模拟数据。血常规、生化未见明显异常。牙结石轻度，建议半年内洁牙评估。\n",
-    "10": "# 猫三联加强免疫\n\n模拟数据。完成猫三联加强免疫，抗体水平达标，接种后观察无异常。\n"
+    "1": "# 年度体检报告\n\n模拟数据。LDL-C 3.8 mmol/L，TC 5.4 mmol/L，25-OH维生素D 18 ng/mL。\n\n建议：低脂饮食、规律运动，3个月后复查。\n",
+    "3": "# 高血压随访记录\n\n模拟数据。诊室血压132/84 mmHg，家庭记录稳定。维持氨氯地平，新增低剂量他汀。\n",
+    "2": "# 鼻炎复诊记录\n\n模拟数据。主诉为花粉季鼻塞、喷嚏。继续鼻喷激素，必要时口服抗组胺药。\n",
+    "4": "# 猫咪年度体检\n\n模拟数据。血常规、生化未见明显异常。牙结石轻度，建议半年内洁牙评估。\n",
+    "5": "# 猫三联加强免疫\n\n模拟数据。完成猫三联加强免疫，抗体水平达标，接种后观察无异常。\n"
   }
 }

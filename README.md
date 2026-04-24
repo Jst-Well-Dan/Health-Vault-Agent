@@ -1,209 +1,163 @@
 # 家庭健康档案
 
-一个本地运行的家庭健康档案应用，用 FastAPI + SQLite 提供后端接口，用 React UMD + Babel 提供前端页面。项目用于管理家庭成员、宠物、就诊记录、体检指标、用药、体重、提醒和附件。
+一个本地运行的家庭健康档案应用，用来整理家人和宠物的就诊记录、体检报告、检验指标、用药、提醒、体重和附件。
 
-## 功能概览
+这个项目主要面向非技术人员和 AI agent：人负责提供报告和确认意图，AI agent 负责读取项目技能、安装运行、整理报告、写入数据库和配置手机访问。
 
-- 家庭成员和宠物档案
-- 就诊记录、体检报告、检验指标和趋势图
-- 用药记录、提醒、宠物体重趋势和日常护理记录
-- 附件预览，支持图片、PDF、Markdown 和文本类附件
-- 本地 SQLite 数据库，默认使用 `data/health.db`
-- 模拟模式，使用独立的公开演示数据库 `data/mock/health_mock.db`
-- 成员头像从 `data/public` 自动匹配并通过 `/public` 静态服务加载
+> 数据默认保存在你自己电脑的 `data/health.db`。它是个人健康数据，请不要上传到公开仓库。
 
-## 项目结构
+## 在线预览
+
+可以先看 mock 数据预览，不需要下载或启动项目：
+
+https://jst-well-dan.github.io/Health-Vault-Agent-Preview/
+
+以下截图同样来自 mock 数据，可以公开展示。
+
+![成员档案](data/public/screenshots/mock-members.png)
+
+![个人概览](data/public/screenshots/mock-overview.png)
+
+![体检指标](data/public/screenshots/mock-checkup.png)
+
+## 适合谁
+
+- 想把家人、宠物的体检报告和就诊记录集中保存的人。
+- 希望 AI agent 帮忙整理 PDF、图片和 Markdown 报告的人。
+- 希望数据留在本地电脑，同时可以用手机通过 Tailscale 查看的人。
+- 想复用一套“报告转换、数据库写入、家庭部署”流程的人。
+
+## 最简单的用法
+
+把下面这段话发给你的 AI agent。
 
 ```text
-backend/              FastAPI 后端、SQLite 初始化、API 路由、导入脚本
-frontend/             React 前端页面和样式
-data/                 真实数据、报告、附件、数据库和公开静态资源
-data/public/          公开静态资源，成员头像放在这里
-data/mock/            本地生成的模拟模式数据库和附件
-docs/                 项目文档
-.codex/skills/        Codex 项目技能和数据库写入规则
+请帮我使用这个家庭健康档案项目：
+https://github.com/Jst-Well-Dan/Health-Vault-Agent
+
+请先阅读 README.md、AGENTS.md 和 .codex/skills 下的项目技能。
+然后先问我这次想做什么，再帮我完成初始化、添加家庭成员和宠物、导入报告或手机访问配置。
 ```
 
-## 快速启动
+如果你只想让 agent 安装并启动：
 
-建议在项目根目录创建虚拟环境，然后安装后端依赖：
+```text
+请克隆 https://github.com/Jst-Well-Dan/Health-Vault-Agent，并使用 health-app 帮我安装、初始化和启动家庭健康档案，然后引导我添加家庭成员和宠物。
+```
+
+如果你想导入一份报告：
+
+```text
+请把我提供的健康报告导入家庭健康档案。需要转换文档时使用 mineru；写入数据库时使用 health-db-writer。
+```
+
+如果你想在手机上查看：
+
+```text
+请先使用 health-app 确认家庭健康档案已经运行，再使用 health-deploy 引导我通过 Tailscale 在手机浏览器访问。
+```
+
+## AI Agent 能力
+
+本仓库内置了 4 个项目技能，AI agent 应优先使用它们，而不是临时发明流程。
+
+| 技能 | 用途 |
+|---|---|
+| `health-app` | 安装依赖、初始化项目、启动服务、停止服务和检查本机运行状态 |
+| `mineru` | 把 PDF、图片、Word 或网页转换为 Markdown；需要表格识别时使用 MinerU token 的精确提取模式 |
+| `health-db-writer` | 整理导入 JSON、校验数据、备份并写入 SQLite；包含数据库写入安全规则 |
+| `health-deploy` | 配置 Tailscale 手机访问、远程访问排查和开机自启 |
+
+## 使用流程
+
+```text
+看在线预览
+  ↓
+让 AI agent 克隆项目：
+https://github.com/Jst-Well-Dan/Health-Vault-Agent
+  ↓
+agent 使用 health-app 安装、初始化并启动项目
+  ↓
+agent 引导你添加家庭成员和宠物
+  ↓
+把报告 PDF / 图片 / Markdown 交给 agent
+  ↓
+agent 使用 mineru 和 health-db-writer 导入数据
+  ↓
+agent 使用 health-deploy 配置 Tailscale 手机访问
+```
+
+## 手动启动
+
+如果你熟悉 PowerShell，也可以手动启动：
 
 ```powershell
-cd E:\Python_Doc\My_Github\health
+git clone <仓库地址>
+cd health
 python -m venv .venv
 .\.venv\Scripts\Activate.ps1
 pip install -r backend\requirements.txt
-```
-
-启动服务：
-
-```powershell
+python backend\scripts\seed_members.py
 cd backend
-python -m uvicorn main:app --reload
+python -m uvicorn main:app --host 0.0.0.0 --port 8000
 ```
 
-打开浏览器访问：
+本机访问：
 
 ```text
 http://127.0.0.1:8000/
 ```
 
-后端会同时提供 `/api` 接口、前端静态文件和 `/public` 静态资源。
-
-## 初始化成员
-
-首次使用可以运行成员初始化脚本：
-
-```powershell
-python backend\scripts\seed_members.py
-```
-
-脚本会写入 `members` 表中的基础成员信息。真实数据库路径默认是：
+同一 Tailscale 网络中的手机访问：
 
 ```text
-data/health.db
+http://<电脑的 Tailscale IP>:8000/
 ```
 
-## 成员头像
-
-成员头像放在：
+## 数据目录
 
 ```text
-data/public/
+backend/              FastAPI 后端、SQLite 初始化、API 路由、导入脚本
+frontend/             前端页面和样式
+data/health.db        真实数据库，本地个人数据，不要公开提交
+data/backups/         数据库备份
+data/imports/         agent 生成的导入 JSON
+data/reports/         原始报告、Markdown 和图片附件
+data/public/          可公开访问的静态资源，如头像和 README 截图
+data/mock/            mock 数据库和 mock 附件
+docs/                 项目文档和静态预览
+.codex/skills/        给 AI agent 使用的项目技能
 ```
 
-头像文件名必须等于成员的 `member_key`，扩展名支持：
+## 真实数据安全
 
-```text
-.jpg .jpeg .png .webp .gif
-```
+- 不要公开提交 `data/health.db`。
+- 不要公开提交真实报告、真实附件或包含个人信息的导入 JSON。
+- 数据库写入任务请交给 `health-db-writer`，让 agent 按项目规则执行。
+- 不要让 agent 删除、重建、重置真实数据库，除非你明确要求。
+- 不确定报告解析是否完整时，让 agent 先暂停并说明问题。
 
-示例：
+## 静态预览
 
-```text
-member_key = demo-self   -> data/public/demo-self.png
-member_key = demo-parent -> data/public/demo-parent.png
-member_key = demo-cat    -> data/public/demo-cat.png
-```
-
-后端在 `GET /api/members` 中扫描 `data/public`，找到文件名与 `member_key` 精确匹配的图片后返回：
-
-```json
-{
-  "key": "demo-self",
-  "avatar_url": "/public/demo-self.png"
-}
-```
-
-前端只读取 `avatar_url`。如果找不到头像，页面会回退显示成员首字头像。
-
-## 模拟模式
-
-模拟模式用于公开演示和前端调试，不会使用真实数据库。
-
-PowerShell：
-
-```powershell
-$env:HEALTH_MOCK_MODE='1'
-cd backend
-python -m uvicorn main:app --reload
-```
-
-模拟数据库路径：
-
-```text
-data/mock/health_mock.db
-```
-
-重新生成模拟数据：
-
-```powershell
-cd backend
-python scripts\seed_mock_data.py --reset
-```
-
-模拟数据源维护在 `backend/mock_data.py`，`data/mock/` 是本地生成目录，开源仓库不提交。
-
-## GitHub Pages 静态预览
-
-可以把现有模拟数据库导出成纯静态预览页，不需要 FastAPI 后端。若本地还没有模拟数据库，先运行一次 `python backend\scripts\seed_mock_data.py --reset`：
+本项目可以把 mock 数据导出成纯静态页面，用于 GitHub Pages 公开展示：
 
 ```powershell
 python backend\scripts\export_static_preview.py
 ```
 
-脚本会生成：
+当前公开预览地址：
 
-```text
-docs/static-preview/
-```
+https://jst-well-dan.github.io/Health-Vault-Agent-Preview/
 
-该目录包含前端文件、公开头像、模拟附件和 `data/static-data.json`。页面内置只读 API shim，会把 `/api/...` 请求映射到静态 JSON；新增、编辑、删除等写入操作在静态预览中不可用。
+静态预览是只读的；新增、编辑、删除不会写入数据库。
 
-本地预览：
+## 给贡献者
 
-```powershell
-python -m http.server 8765 --directory docs\static-preview
-```
+这个项目的优先级是：数据安全、流程清晰、AI agent 可执行、非技术人员能理解。
 
-然后打开：
-
-```text
-http://127.0.0.1:8765/
-```
-
-部署到 GitHub Pages 时，可选择把 Pages source 指向 `docs/`，访问路径为 `/static-preview/`。
-
-## 导入就诊数据
-
-项目提供 JSON 导入脚本。写入真实数据库前请先 dry-run：
-
-```powershell
-python backend\scripts\import_visit_json.py --file path\to\visit.json --dry-run
-python backend\scripts\import_visit_json.py --file path\to\visit.json --write
-```
-
-真实数据库包含个人和家庭健康记录。写入规则统一维护在 `.codex/skills/health-db-writer/`，写入真实数据库前请先 dry-run 并创建备份。
-
-## 常用 API
-
-```text
-GET /api/meta
-GET /api/members
-GET /api/members/{key}
-GET /api/visits?member={key}
-GET /api/labs?member={key}
-GET /api/meds?member={key}
-GET /api/weight?member={key}
-GET /api/reminders?member={key}
-GET /api/attachments?member={key}
-```
-
-## 数据库路径
-
-默认路径：
-
-```text
-data/health.db
-```
-
-可以通过环境变量覆盖：
-
-```powershell
-$env:HEALTH_DB_PATH='E:\tmp\health_demo.db'
-```
-
-模拟模式可以通过：
-
-```powershell
-$env:HEALTH_MOCK_MODE='1'
-```
-
-`HEALTH_DB_PATH` 优先级高于默认真实库和默认模拟库。
-
-## 开发说明
-
-- 前端文件由后端直接静态服务，无需构建步骤。
-- 前端组件加载顺序是 `primitives.jsx`、`screen_family.jsx`、`screen_member.jsx`。
-- 修改前端文件后，浏览器如仍显示旧内容，可以使用 `Ctrl + F5` 硬刷新。
-- 修改后端路由后，使用 `uvicorn --reload` 会自动重载；如果没有重载，请手动重启服务。
+- README 只保留用户入口、简单提示词和关键概念。
+- 具体数据库写入要求放在 `health-db-writer` skill 中维护。
+- 本机安装、初始化和启动流程放在 `health-app` skill 中维护。
+- 手机访问、自启和 Tailscale 流程放在 `health-deploy` skill 中维护。
+- 文档转换流程放在 `mineru` skill 中维护。
+- UI 截图请使用 mock 数据，适合公开展示的图片放在 `data/public/`。

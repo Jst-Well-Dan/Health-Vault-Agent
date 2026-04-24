@@ -50,6 +50,8 @@ data/public/*
 !data/public/demo-*.jpg
 !data/public/demo-*.jpeg
 !data/public/demo-*.webp
+!data/public/screenshots/
+!data/public/screenshots/**
 报告pdf/
 报告md/
 文案.md

@@ -1,80 +1,177 @@
-# karpathy-guidelines.md
+# 家庭健康档案项目使用说明
 
-Behavioral guidelines to reduce common LLM coding mistakes. Merge with project-specific instructions as needed.
+这个仓库已经是可使用状态。`AGENTS.md` 的目标不是指导开发，而是让 AI agent 明白如何使用这个项目帮助用户完成实际任务。
 
-**Tradeoff:** These guidelines bias toward caution over speed. For trivial tasks, use judgment.
+## 你首先要做什么
 
-## 1. Think Before Coding
+当用户让你“使用这个项目”时，先阅读：
 
-**Don't assume. Don't hide confusion. Surface tradeoffs.**
+1. `README.md`
+2. `AGENTS.md`
+3. `.codex/skills/` 下与任务相关的 `SKILL.md`
 
-Before implementing:
-- State your assumptions explicitly. If uncertain, ask.
-- If multiple interpretations exist, present them - don't pick silently.
-- If a simpler approach exists, say so. Push back when warranted.
-- If something is unclear, stop. Name what's confusing. Ask.
+然后先判断用户这次要完成哪一类事情，不要直接开始编码，也不要默认进入开发模式。
 
-## 2. Simplicity First
+优先把任务理解为以下几类“使用任务”：
 
-**Minimum code that solves the problem. Nothing speculative.**
+- 安装、初始化、启动、停止、检查本机运行状态
+- 添加或整理家庭成员、宠物、报告和附件
+- 把 PDF、图片、Word、网页等报告转换成 Markdown
+- 把结构化健康数据写入 SQLite
+- 配置手机访问、Tailscale 远程访问和开机自启
 
-- No features beyond what was asked.
-- No abstractions for single-use code.
-- No "flexibility" or "configurability" that wasn't requested.
-- No error handling for impossible scenarios.
-- If you write 200 lines and it could be 50, rewrite it.
+如果用户只说“帮我用这个项目”，先问清这次目标是什么，再继续执行。
 
-Ask yourself: "Would a senior engineer say this is overcomplicated?" If yes, simplify.
+## 项目定位
 
-## 3. Surgical Changes
+这是一个本地运行的家庭健康档案应用，用来整理家人和宠物的：
 
-**Touch only what you must. Clean up only your own mess.**
+- 就诊记录
+- 体检报告
+- 检验指标
+- 用药记录
+- 提醒事项
+- 体重记录
+- 附件资料
 
-When editing existing code:
-- Don't "improve" adjacent code, comments, or formatting.
-- Don't refactor things that aren't broken.
-- Match existing style, even if you'd do it differently.
-- If you notice unrelated dead code, mention it - don't delete it.
+默认数据存放在本机 `data/health.db`。它是用户的个人健康数据，不应被公开上传，也不应被随意重置或覆盖。
 
-When your changes create orphans:
-- Remove imports/variables/functions that YOUR changes made unused.
-- Don't remove pre-existing dead code unless asked.
+## 任务分流
 
-The test: Every changed line should trace directly to the user's request.
+本项目已经把主要使用流程拆成 4 个 skill。AI agent 处理任务时应优先使用这些 skill，而不是临时发明流程。
 
-## 4. Goal-Driven Execution
+### `health-app`
 
-**Define success criteria. Loop until verified.**
+适用于：
 
-Transform tasks into verifiable goals:
-- "Add validation" → "Write tests for invalid inputs, then make them pass"
-- "Fix the bug" → "Write a test that reproduces it, then make it pass"
-- "Refactor X" → "Ensure tests pass before and after"
+- 安装依赖
+- 初始化项目
+- 启动服务
+- 停止服务
+- 检查本机运行状态
 
-For multi-step tasks, state a brief plan:
+当用户说“启动健康档案”“安装项目”“初始化项目”“停止服务”“检查服务状态”“本机运行”时，使用这个 skill。
+
+### `mineru`
+
+适用于：
+
+- 把 PDF、图片、Word、网页转换成 Markdown
+- 抽取报告文字和表格
+- 为后续导入数据库准备中间文件
+
+当用户提供原始报告文件，而数据库写入前还没有可用 Markdown 或结构化内容时，先使用这个 skill。
+
+### `health-db-writer`
+
+适用于：
+
+- 生成或校验导入 JSON
+- 备份数据库
+- dry-run 校验
+- 把就诊、体检、检验、附件等数据写入 SQLite
+
+只要任务涉及写入或更新健康档案数据库，就必须使用这个 skill。
+
+### `health-deploy`
+
+适用于：
+
+- 配置 Tailscale
+- 让手机访问项目
+- 配置开机自启
+- 排查远程访问问题
+
+当用户说“手机访问”“配置 Tailscale”“远程访问”“开机自启”“手机查看健康档案”时，使用这个 skill。
+
+## 推荐执行顺序
+
+根据用户目标，按下面顺序执行：
+
+1. 如果项目还没运行，先用 `health-app`
+2. 如果用户提供的是 PDF、图片、Word 或网页，先用 `mineru`
+3. 如果要把报告或记录写入数据库，再用 `health-db-writer`
+4. 如果用户想在手机上访问，最后用 `health-deploy`
+
+不要跳过中间必要步骤。例如：
+
+- 没有结构化内容时，不要直接写库
+- 服务没启动时，不要直接指导手机访问
+- 不要把“导入报告”误当成“只保存文件”
+
+## 数据安全规则
+
+真实数据库是用户数据。处理时必须保守。
+
+- 不要直接编辑 `data/health.db`，除非用户明确要求
+- 不要删除、重建、重置或批量覆盖真实数据库，除非用户明确要求
+- 写入数据库前，优先使用项目脚本而不是临时 SQL
+- 写入体检或就诊数据前，先运行 dry-run
+- 写入真实数据库前，先在 `data/backups/` 创建时间戳备份
+- 写入后，向用户报告插入的 `visit_id`、影响行数、数据库路径和备份路径
+- 不确定报告解析是否完整时，先暂停并说明问题，不要猜测写入
+
+数据库写入细则、payload 结构、字段规则、附件路径、验证要求，统一以：
+
+- `.codex/skills/health-db-writer/SKILL.md`
+- `.codex/skills/health-db-writer/references/database-write.md`
+
+为准。
+
+## 报告导入原则
+
+当用户提供体检报告、检验单或就诊资料时：
+
+1. 先识别成员和任务目标
+2. 必要时把 PDF 或图片转换为 Markdown
+3. 生成结构化导入 payload
+4. 校验 payload 与源报告是否一致
+5. dry-run
+6. 备份真实数据库
+7. 正式写入
+8. 回报结果
+
+不要把 PDF 原样当成数据库内容写入。报告文件本身通常应作为附件保存，结构化数据写入 `visits`、`lab_results`、`meds`、`attachments` 等表。
+
+## 本机运行和手机访问
+
+本机访问默认地址：
+
+```text
+http://127.0.0.1:8000/
 ```
-1. [Step] → verify: [check]
-2. [Step] → verify: [check]
-3. [Step] → verify: [check]
+
+同一 Tailscale 网络下的手机访问地址：
+
+```text
+http://<电脑的 Tailscale IP>:8000/
 ```
 
-Strong success criteria let you loop independently. Weak criteria ("make it work") require constant clarification.
+手机访问前，先确认服务已经在本机运行。手机访问、自启、Tailscale 配置的具体步骤交给 `health-deploy`。
 
----
+## 目录理解
 
-**These guidelines are working if:** fewer unnecessary changes in diffs, fewer rewrites due to overcomplication, and clarifying questions come before implementation rather than after mistakes.
+你至少应理解这些目录的用途：
 
-## 5. Database Write Rules
+- `backend/`：后端 API、数据库初始化、导入脚本
+- `frontend/`：前端页面和样式
+- `data/health.db`：真实数据库
+- `data/backups/`：数据库备份
+- `data/imports/`：导入 JSON
+- `data/reports/`：报告 PDF、Markdown、图片附件
+- `data/mock/`：mock 数据
+- `.codex/skills/`：项目技能
 
-This project stores personal and family health records in SQLite. Treat the real database as user data.
+## 沟通规则
 
-- For database write/import tasks, use the project skill at `skills/health-db-writer`.
-- Do not edit `data/health.db` directly unless the user explicitly asks.
-- Prefer scripts under `backend/scripts/` for imports.
-- Use `python backend/scripts/import_visit_json.py --file <payload.json> --dry-run` before writing visit data.
-- Use `python backend/scripts/import_visit_json.py --file <payload.json> --write` for confirmed imports.
-- Before writing to the real database, create a timestamped backup under `data/backups/`.
-- Use mock mode for experiments: set `HEALTH_MOCK_MODE=1`.
-- Do not delete, rebuild, reset, or bulk-update the real database without explicit user confirmation.
-- After writing, report the inserted IDs and affected row counts.
-- Follow `.codex/skills/health-db-writer/references/database-write.md` for payload shape, date format, attachment paths, and validation rules.
+与用户协作时，保持“使用项目”的语境，不要默认进入“开发项目”的语境。
+
+- 先说明你理解到的目标
+- 告诉用户你接下来会用哪个 skill
+- 涉及真实数据写入时，先展示计划或 dry-run 结果
+- 发现信息不足时，明确指出缺什么，不要自行脑补
+- 如果任务超出当前 skill 边界，切换到正确的 skill，而不是在错误的流程里继续推进
+
+## 给 AI 的一句话总结
+
+这是一个给家庭健康档案使用者和 AI agent 准备的本地项目。你的主要职责是读取 README 和项目 skills，按既定流程完成安装启动、报告转换、数据库写入和手机访问配置，同时保护真实健康数据。

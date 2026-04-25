@@ -14,6 +14,8 @@ https://jst-well-dan.github.io/Health-Vault-Agent-Preview/
 
 以下截图同样来自 mock 数据，可以公开展示。
 
+![手机端成员档案](data/public/screenshots/mock-mobile-members.png)
+
 ![成员档案](data/public/screenshots/mock-members.png)
 
 ![个人概览](data/public/screenshots/mock-overview.png)

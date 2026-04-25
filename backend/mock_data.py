@@ -10,9 +10,9 @@ MOCK_ATTACHMENT_DIR = BASE_DIR / "data" / "mock" / "attachments"
 MEMBERS = [
     {
         "key": "demo-self",
-        "name": "张三",
-        "full_name": "张三",
-        "initial": "张",
+        "name": "大咪",
+        "full_name": "大咪",
+        "initial": "大",
         "birth_date": "1992-06-18",
         "sex": "女",
         "blood_type": "O",
@@ -29,8 +29,8 @@ MEMBERS = [
     },
     {
         "key": "demo-parent",
-        "name": "张三爸",
-        "full_name": "张三爸",
+        "name": "大咪爸",
+        "full_name": "大咪爸",
         "initial": "爸",
         "birth_date": "1963-11-03",
         "sex": "男",

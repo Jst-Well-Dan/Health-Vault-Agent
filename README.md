@@ -1,33 +1,42 @@
 # 家庭健康档案
 
-一个本地运行的家庭健康档案应用，用来整理家人和宠物的就诊记录、体检报告、检验指标、用药、提醒、体重和附件。
+把散落在手机、邮箱和诊所收据里的体检报告整理进本地数据库，让家人随时查阅。
 
-这个项目主要面向非技术人员和 AI agent：人负责提供报告和确认意图，AI agent 负责读取项目技能、安装运行、整理报告、写入数据库和配置手机访问。
+- **本地优先**：数据只保存在自己的电脑上，不经过任何云服务
+- **AI 驱动**：把 PDF 或图片交给 AI agent，它负责解析、归档和写入——你只需确认
+- **手机可访问**：通过 Tailscale，家人在手机上也能随时查看
 
-> 数据默认保存在你自己电脑的 `data/health.db`。它是个人健康数据，请不要上传到公开仓库。
+**[→ 在线预览（无需下载）](https://jst-well-dan.github.io/Health-Vault-Agent-Preview/)**
 
-## 在线预览
+---
 
-可以先看 mock 数据预览，不需要下载或启动项目：
+## 预览截图
 
-https://jst-well-dan.github.io/Health-Vault-Agent-Preview/
+<p align="center">
+  <img src="data/public/screenshots/mock-mobile-members.png" width="280" alt="手机端成员档案">
+  <br><sub>手机端：成员档案</sub>
+</p>
 
-以下截图同样来自 mock 数据，可以公开展示。
+<p>
+  <img src="data/public/screenshots/mock-members.png" alt="成员档案">
+  <br><sub>桌面端：所有家庭成员和宠物一览</sub>
+</p>
 
-![手机端成员档案](data/public/screenshots/mock-mobile-members.png)
+<p>
+  <img src="data/public/screenshots/mock-overview.png" alt="个人概览">
+  <br><sub>个人概览：就诊记录、用药和体重趋势</sub>
+</p>
 
-![成员档案](data/public/screenshots/mock-members.png)
-
-![个人概览](data/public/screenshots/mock-overview.png)
-
-![体检指标](data/public/screenshots/mock-checkup.png)
+<p>
+  <img src="data/public/screenshots/mock-checkup.png" alt="体检指标">
+  <br><sub>体检指标：历次检验数值对比</sub>
+</p>
 
 ## 适合谁
 
-- 想把家人、宠物的体检报告和就诊记录集中保存的人。
-- 希望 AI agent 帮忙整理 PDF、图片和 Markdown 报告的人。
-- 希望数据留在本地电脑，同时可以用手机通过 Tailscale 查看的人。
-- 想复用一套“报告转换、数据库写入、家庭部署”流程的人。
+- 想把家人、宠物的体检报告和就诊记录集中保存的人
+- 希望 AI agent 帮忙整理 PDF、图片和 Markdown 报告的人
+- 希望数据留在本地电脑，同时能用手机随时查看的人
 
 ## 最简单的用法
 
@@ -59,17 +68,6 @@ https://github.com/Jst-Well-Dan/Health-Vault-Agent
 请先使用 health-app 确认家庭健康档案已经运行，再使用 health-deploy 引导我通过 Tailscale 在手机浏览器访问。
 ```
 
-## AI Agent 能力
-
-本仓库内置了 4 个项目技能，AI agent 应优先使用它们，而不是临时发明流程。
-
-| 技能 | 用途 |
-|---|---|
-| `health-app` | 安装依赖、初始化项目、启动服务、停止服务和检查本机运行状态 |
-| `mineru` | 把 PDF、图片、Word 或网页转换为 Markdown；需要表格识别时使用 MinerU token 的精确提取模式 |
-| `health-db-writer` | 整理导入 JSON、校验数据、备份并写入 SQLite；包含数据库写入安全规则 |
-| `health-deploy` | 配置 Tailscale 手机访问、远程访问排查和开机自启 |
-
 ## 使用流程
 
 ```text
@@ -89,13 +87,24 @@ agent 使用 mineru 和 health-db-writer 导入数据
 agent 使用 health-deploy 配置 Tailscale 手机访问
 ```
 
+## AI Agent 能力
+
+本仓库内置了 4 个项目技能，覆盖从安装到数据导入的完整流程。
+
+| 技能 | 能做什么 |
+|---|---|
+| `health-app` | 安装依赖、初始化项目、启动/停止服务、检查运行状态 |
+| `mineru` | 把 PDF、图片、Word 或网页转换为 Markdown，支持表格精确提取 |
+| `health-db-writer` | 整理导入 JSON、校验数据、备份并写入 SQLite |
+| `health-deploy` | 配置 Tailscale 手机访问、远程访问排查、开机自启 |
+
 ## 手动启动
 
-如果你熟悉 PowerShell，也可以手动启动：
+如果你熟悉命令行，也可以不借助 agent 手动启动：
 
 ```powershell
-git clone <仓库地址>
-cd health
+git clone https://github.com/Jst-Well-Dan/Health-Vault-Agent
+cd Health-Vault-Agent
 python -m venv .venv
 .\.venv\Scripts\Activate.ps1
 pip install -r backend\requirements.txt
@@ -131,35 +140,10 @@ docs/                 项目文档和静态预览
 .codex/skills/        给 AI agent 使用的项目技能
 ```
 
-## 真实数据安全
+## 数据隐私
 
-- 不要公开提交 `data/health.db`。
-- 不要公开提交真实报告、真实附件或包含个人信息的导入 JSON。
-- 数据库写入任务请交给 `health-db-writer`，让 agent 按项目规则执行。
-- 不要让 agent 删除、重建、重置真实数据库，除非你明确要求。
-- 不确定报告解析是否完整时，让 agent 先暂停并说明问题。
+所有数据保存在你自己电脑的 `data/health.db`，不经过任何云服务或第三方接口。
 
-## 静态预览
-
-本项目可以把 mock 数据导出成纯静态页面，用于 GitHub Pages 公开展示：
-
-```powershell
-python backend\scripts\export_static_preview.py
-```
-
-当前公开预览地址：
-
-https://jst-well-dan.github.io/Health-Vault-Agent-Preview/
-
-静态预览是只读的；新增、编辑、删除不会写入数据库。
-
-## 给贡献者
-
-这个项目的优先级是：数据安全、流程清晰、AI agent 可执行、非技术人员能理解。
-
-- README 只保留用户入口、简单提示词和关键概念。
-- 具体数据库写入要求放在 `health-db-writer` skill 中维护。
-- 本机安装、初始化和启动流程放在 `health-app` skill 中维护。
-- 手机访问、自启和 Tailscale 流程放在 `health-deploy` skill 中维护。
-- 文档转换流程放在 `mineru` skill 中维护。
-- UI 截图请使用 mock 数据，适合公开展示的图片放在 `data/public/`。
+- 数据库写入由 `health-db-writer` 执行，包含自动备份和数据校验
+- 删除或重置操作需要你明确确认，agent 不会自行执行破坏性操作
+- 报告解析存疑时，agent 会暂停并说明问题，而不是静默写入

@@ -1020,6 +1020,19 @@ const DailyEditor = ({ editor, member, isPetMember, saving, onClose, onChoose, o
         : editor.type === 'care'
           ? editor.item ? '编辑记事' : '添加记事'
           : '记录体重';
+
+  React.useEffect(() => {
+    const { body, documentElement } = document;
+    const prevBodyOverflow = body.style.overflow;
+    const prevHtmlOverflow = documentElement.style.overflow;
+    body.style.overflow = 'hidden';
+    documentElement.style.overflow = 'hidden';
+    return () => {
+      body.style.overflow = prevBodyOverflow;
+      documentElement.style.overflow = prevHtmlOverflow;
+    };
+  }, []);
+
   return (
     <div className="modal-backdrop">
       <div className="daily-modal sketch shadow">

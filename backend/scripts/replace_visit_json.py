@@ -17,6 +17,7 @@ from import_visit_json import (  # noqa: E402
     _validate_member_exists,
     _validate_payload_shape,
 )
+from path_utils import project_relative_path  # noqa: E402
 
 
 def _backup_database() -> Path | None:
@@ -38,6 +39,7 @@ def _backup_database() -> Path | None:
 
 def _insert_payload(conn: sqlite3.Connection, payload: dict) -> int:
     visit = payload["visit"]
+    visit_source_file = project_relative_path(visit.get("source_file"))
     cur = conn.execute(
         """
         INSERT INTO visits
@@ -57,7 +59,7 @@ def _insert_payload(conn: sqlite3.Connection, payload: dict) -> int:
             _json_list(visit.get("diagnosis")),
             visit.get("notes"),
             visit.get("note_full"),
-            visit.get("source_file"),
+            visit_source_file,
         ),
     )
     visit_id = cur.lastrowid
@@ -81,7 +83,7 @@ def _insert_payload(conn: sqlite3.Connection, payload: dict) -> int:
                 lab.get("ref_low"),
                 lab.get("ref_high"),
                 lab.get("status"),
-                lab.get("source_file") or visit.get("source_file"),
+                project_relative_path(lab.get("source_file") or visit.get("source_file")),
             ),
         )
 
@@ -123,7 +125,7 @@ def _insert_payload(conn: sqlite3.Connection, payload: dict) -> int:
                 attachment.get("org"),
                 attachment.get("tag"),
                 attachment.get("filename"),
-                attachment.get("file_path"),
+                project_relative_path(attachment.get("file_path")),
                 attachment.get("notes"),
             ),
         )

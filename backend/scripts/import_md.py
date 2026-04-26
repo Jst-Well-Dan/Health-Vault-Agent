@@ -8,6 +8,7 @@ BACKEND_DIR = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(BACKEND_DIR))
 
 from database import get_conn, init_db  # noqa: E402
+from path_utils import project_relative_path  # noqa: E402
 
 SEVERITY_VALUES = {"严重", "轻微", "一般"}
 
@@ -33,6 +34,7 @@ def _visit_type(visit: dict) -> str:
 
 def import_payload(payload: dict) -> int:
     visit = payload["visit"]
+    visit_source_file = project_relative_path(visit.get("source_file"))
     labs = payload.get("labs", [])
     meds = payload.get("meds", [])
     attachments = payload.get("attachments", [])
@@ -59,7 +61,7 @@ def import_payload(payload: dict) -> int:
                     _json_list(visit.get("diagnosis")),
                     visit.get("notes"),
                     visit.get("note_full"),
-                    visit.get("source_file"),
+                    visit_source_file,
                 ),
             )
             visit_id = cur.lastrowid
@@ -83,7 +85,7 @@ def import_payload(payload: dict) -> int:
                         lab.get("ref_low"),
                         lab.get("ref_high"),
                         lab.get("status"),
-                        lab.get("source_file") or visit.get("source_file"),
+                        project_relative_path(lab.get("source_file") or visit.get("source_file")),
                     ),
                 )
 
@@ -125,7 +127,7 @@ def import_payload(payload: dict) -> int:
                         attachment.get("org"),
                         attachment.get("tag"),
                         attachment.get("filename"),
-                        attachment.get("file_path"),
+                        project_relative_path(attachment.get("file_path")),
                         attachment.get("notes"),
                     ),
                 )

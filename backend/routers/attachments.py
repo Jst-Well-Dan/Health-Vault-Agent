@@ -4,24 +4,20 @@ from pathlib import Path
 from fastapi import APIRouter, HTTPException
 from fastapi.responses import FileResponse, PlainTextResponse
 
-from database import BASE_DIR, get_conn
+from database import get_conn
+from path_utils import resolve_project_data_path
 from routers.common import require_row, row_to_dict, rows_to_dicts
 
 
 router = APIRouter(tags=["attachments"])
-DATA_DIR = (BASE_DIR / "data").resolve()
-
-
 def _resolve_attachment_path(file_path: str | None) -> Path:
     if not file_path:
         raise HTTPException(status_code=404, detail="附件路径未记录")
 
-    raw = Path(file_path)
-    candidate = raw if raw.is_absolute() else BASE_DIR / raw
-    resolved = candidate.resolve()
-
-    if DATA_DIR not in [resolved, *resolved.parents]:
-        raise HTTPException(status_code=403, detail="附件路径不在允许目录内")
+    try:
+        resolved = resolve_project_data_path(file_path)
+    except ValueError as exc:
+        raise HTTPException(status_code=403, detail=str(exc)) from exc
     if not resolved.is_file():
         raise HTTPException(status_code=404, detail="附件文件不存在")
     return resolved
